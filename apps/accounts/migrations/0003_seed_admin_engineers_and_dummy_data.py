@@ -1,24 +1,25 @@
 from django.db import migrations
+from django.contrib.auth.hashers import make_password
 
 
 def forwards(apps, schema_editor):
-    """Load admin user, junior engineers (from Excel fixture), and dummy dashboard data.
-
-    Friend workflow after git pull:
-        python manage.py migrate
-    """
-    from seeds.seed_data import seed_all
-
-    seed_all()
+    User = apps.get_model('accounts', 'User')
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create(
+            username='admin',
+            email='admin@acag.punjab.gov.pk',
+            password=make_password('admin'),
+            role='ADMIN',
+            division='Lahore',
+            district='Lahore',
+            is_staff=True,
+            is_superuser=True,
+            is_active=True,
+        )
 
 
 def backwards(apps, schema_editor):
-    JuniorEngineer = apps.get_model('accounts', 'JuniorEngineer')
     User = apps.get_model('accounts', 'User')
-    Project = apps.get_model('projects', 'Project')
-
-    JuniorEngineer.objects.all().delete()
-    Project.objects.filter(case_id__startswith='VS-2026-').delete()
     User.objects.filter(username='admin').delete()
 
 

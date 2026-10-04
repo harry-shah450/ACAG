@@ -65,3 +65,8 @@ coverage.xml
 *.cover
 .pytest_cache/
 vigilant-site-backend/
+
+# Mobile App (Completely independent)
+MOBILE ACAG/
+Mobile_ACAG/
+*.docx

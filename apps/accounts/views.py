@@ -1,5 +1,7 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
@@ -23,6 +25,17 @@ from apps.common.utils import log_audit
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        operation_summary='User Login',
+        operation_description='Enter username and password to authenticate and obtain JWT access and refresh tokens.',
+        request_body=LoginSerializer,
+        responses={
+            200: 'Login successful with access_token and user info',
+            400: 'Validation error / missing credentials',
+            401: 'Invalid username or password',
+        },
+        tags=['Authentication'],
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if not serializer.is_valid():
@@ -66,6 +79,16 @@ class LoginView(APIView):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        operation_summary='User Logout',
+        operation_description='Blacklist refresh token to log out.',
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={'refresh_token': openapi.Schema(type=openapi.TYPE_STRING, description='JWT refresh token')},
+            required=['refresh_token'],
+        ),
+        tags=['Authentication'],
+    )
     def post(self, request):
         refresh_token = request.data.get('refresh_token')
         if refresh_token:
@@ -89,6 +112,11 @@ class LogoutView(APIView):
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        operation_summary='Get Current Authenticated User',
+        operation_description='Retrieve details of the currently logged-in user.',
+        tags=['Authentication'],
+    )
     def get(self, request):
         return success_response(data=UserSerializer(request.user).data)
 
@@ -96,6 +124,12 @@ class MeView(APIView):
 class RegisterUserView(APIView):
     permission_classes = [IsAdmin]
 
+    @swagger_auto_schema(
+        operation_summary='Register User',
+        operation_description='Admin-only: register a new system user.',
+        request_body=RegisterUserSerializer,
+        tags=['Users'],
+    )
     def post(self, request):
         serializer = RegisterUserSerializer(
             data=request.data,
@@ -161,9 +195,19 @@ class UserDetailView(APIView):
         user = self.get_object(id)
         return success_response(data=UserSerializer(user).data)
 
+    @swagger_auto_schema(
+        operation_summary='Update User (Full)',
+        request_body=UserUpdateSerializer,
+        tags=['Users'],
+    )
     def put(self, request, id):
         return self._update(request, id, partial=False)
 
+    @swagger_auto_schema(
+        operation_summary='Update User (Partial)',
+        request_body=UserUpdateSerializer,
+        tags=['Users'],
+    )
     def patch(self, request, id):
         return self._update(request, id, partial=True)
 
@@ -262,6 +306,11 @@ class JuniorEngineerListView(APIView):
         serializer = JuniorEngineerSerializer(page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
+    @swagger_auto_schema(
+        operation_summary='Register Junior Engineer',
+        request_body=JuniorEngineerSerializer,
+        tags=['Junior Engineers'],
+    )
     def post(self, request):
         data = request.data.copy()
         if not data.get('sr_no'):

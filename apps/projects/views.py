@@ -41,9 +41,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     filterset_class = ProjectFilter
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'milestones', 'visits', 'photos']:
+        if self.action in ['list', 'retrieve', 'milestones', 'visits', 'photos', 'download_template']:
             return [IsAuthenticated(), CanViewProject()]
-        elif self.action in ['create', 'update', 'partial_update', 'create_visit', 'upload_photos']:
+        elif self.action in ['create', 'update', 'partial_update', 'create_visit', 'upload_photos', 'bulk_import']:
             return [IsAuthenticated(), CanEditProject()]
         elif self.action == 'destroy':
             return [IsAuthenticated(), IsAdmin()]
@@ -521,3 +521,464 @@ class ProjectViewSet(viewsets.ModelViewSet):
             },
             message='Compliance status updated successfully.',
         )
+
+    @swagger_auto_schema(
+        method='get',
+        operation_summary='Download House Import Excel / CSV Template',
+        operation_description='Download a pre-formatted template with standard headers and sample data for bulk house upload.',
+        tags=['Projects'],
+    )
+    @action(detail=False, methods=['get'], url_path='download_template')
+    def download_template(self, request):
+        import csv
+        from django.http import HttpResponse
+
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = 'attachment; filename="ACAG_House_Import_Template.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'Owner Name',
+            'CNIC',
+            'Contact Number',
+            'Email',
+            'Address',
+            'District',
+            'Tehsil',
+            'Union Council',
+            'Plot Size (Marla)',
+            'Covered Area (sqft)',
+            'Floors',
+            'Latitude',
+            'Longitude',
+            'Assigned Engineer',
+            'Current Stage',
+            'Progress (%)',
+            'Loan Approved',
+            'Loan Disbursed',
+            'Loan Status',
+            'Safety Status',
+            'House Status',
+            'Remarks',
+        ])
+        writer.writerow([
+            'Muhammad Tariq',
+            '35202-7654321-3',
+            '0300-1234567',
+            'tariq.acag@example.com',
+            'House 12, Street 4, Gulshan Ravi',
+            'Lahore',
+            'Lahore City',
+            'UC-45',
+            '5',
+            '1100',
+            '1',
+            '31.5204',
+            '74.3587',
+            'Engr. Bilal Raza',
+            'Foundation',
+            '20',
+            '1500000',
+            '500000',
+            'Approved',
+            'Safe',
+            'Under Construction',
+            'Foundation excavation completed, lean concrete in progress.',
+        ])
+        writer.writerow([
+            'Fatima Bibi',
+            '38403-1234567-8',
+            '0321-9876543',
+            'fatima.bibi@example.com',
+            'Chak 42-SB, Sargodha Road',
+            'Sargodha',
+            'Sargodha',
+            'UC-12',
+            '3',
+            '750',
+            '1',
+            '32.0836',
+            '72.6711',
+            'Engr. Ayesha Malik',
+            'Brick Masonry',
+            '45',
+            '1500000',
+            '750000',
+            'Partially Disbursed',
+            'Safe',
+            'Under Construction',
+            'Brick masonry up to lintel level in progress.',
+        ])
+        return response
+
+    @swagger_auto_schema(
+        method='post',
+        operation_summary='Bulk Import Houses from Excel / CSV or JSON',
+        operation_description='Validate, detect duplicates, auto-generate sequential House IDs, create milestones, and import house records.',
+        tags=['Projects'],
+    )
+    @action(detail=False, methods=['post'], url_path='bulk_import')
+    def bulk_import(self, request):
+        import csv
+        import io
+        import re
+        from decimal import Decimal
+        from django.db import transaction
+        from apps.accounts.models import JuniorEngineer, User
+        from apps.projects.models import generate_unique_house_id
+
+        district_coords = {
+            'Lahore': (31.5204, 74.3587),
+            'Rawalpindi': (33.5651, 73.0169),
+            'Faisalabad': (31.4504, 73.1350),
+            'Multan': (30.1575, 71.5249),
+            'Gujranwala': (32.1877, 74.1945),
+            'Bahawalpur': (29.3544, 71.6911),
+            'Sargodha': (32.0836, 72.6711),
+            'Sialkot': (32.4945, 74.5229),
+            'Sheikhupura': (31.7131, 73.9783),
+            'Jhang': (31.2781, 72.3317),
+            'Rahim Yar Khan': (28.4212, 70.2989),
+            'Kasur': (31.1179, 74.4461),
+            'Sahiwal': (30.6682, 73.1114),
+            'Okara': (30.8080, 73.4458),
+            'Dera Ghazi Khan': (30.0489, 70.6455),
+            'Chiniot': (31.7200, 72.9789),
+            'Muzaffargarh': (30.0744, 71.1847),
+        }
+
+        raw_rows = []
+
+        # 1. Check if file is uploaded
+        uploaded_file = request.FILES.get('file')
+        if uploaded_file:
+            file_name = uploaded_file.name.lower()
+            if file_name.endswith('.csv'):
+                try:
+                    file_content = uploaded_file.read().decode('utf-8-sig', errors='replace')
+                    reader = csv.DictReader(io.StringIO(file_content))
+                    for row in reader:
+                        raw_rows.append(row)
+                except Exception as e:
+                    return error_response(message=f'Failed to parse CSV file: {str(e)}', status_code=status.HTTP_400_BAD_REQUEST)
+            elif file_name.endswith('.xlsx') or file_name.endswith('.xls'):
+                try:
+                    import openpyxl
+                    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+                    sheet = wb.active
+                    headers = []
+                    for cell in sheet[1]:
+                        headers.append(str(cell.value or '').strip())
+                    for row in sheet.iter_rows(min_row=2, values_only=True):
+                        if not any(row):
+                            continue
+                        row_dict = {}
+                        for i, val in enumerate(row):
+                            if i < len(headers) and headers[i]:
+                                row_dict[headers[i]] = val
+                        raw_rows.append(row_dict)
+                except Exception as e:
+                    return error_response(message=f'Failed to parse Excel file: {str(e)}', status_code=status.HTTP_400_BAD_REQUEST)
+            else:
+                return error_response(message='Unsupported file format. Please upload a .csv or .xlsx file.', status_code=status.HTTP_400_BAD_REQUEST)
+        else:
+            # 2. Check JSON payload
+            json_houses = request.data.get('houses')
+            if json_houses is None and isinstance(request.data, list):
+                json_houses = request.data
+            if json_houses and isinstance(json_houses, list):
+                raw_rows = json_houses
+            else:
+                return error_response(message='No file or houses data provided for import.', status_code=status.HTTP_400_BAD_REQUEST)
+
+        if not raw_rows:
+            return error_response(message='The uploaded file or dataset contains no house records.', status_code=status.HTTP_400_BAD_REQUEST)
+
+        # Helper to normalize keys
+        def normalize_key(k):
+            return re.sub(r'[^a-z0-9]', '', str(k).lower())
+
+        # Existing CNICs and Case IDs for duplicate checking
+        existing_cnics = set(
+            Project.objects.exclude(owner_cnic='').values_list('owner_cnic', flat=True)
+        )
+        existing_case_ids = set(
+            Project.objects.values_list('case_id', flat=True)
+        )
+
+        seen_in_batch_cnic = set()
+        seen_in_batch_id = set()
+
+        created_projects = []
+        failed_records = []
+        duplicate_records = []
+
+        total_rows = len(raw_rows)
+
+        # Pre-cache engineers for fast matching
+        all_juniors = list(JuniorEngineer.objects.all())
+        all_field_users = list(User.objects.filter(role=UserRole.FIELD_ENGINEER))
+
+        for idx, row in enumerate(raw_rows, start=1):
+            normalized_row = {normalize_key(k): v for k, v in row.items() if k is not None}
+
+            def get_val(*keys, default=''):
+                for key in keys:
+                    n_k = normalize_key(key)
+                    if n_k in normalized_row and normalized_row[n_k] is not None:
+                        val_str = str(normalized_row[n_k]).strip()
+                        if val_str:
+                            return val_str
+                return default
+
+            owner_name = get_val('owner_name', 'owner', 'name', 'beneficiary_name')
+            cnic = get_val('cnic', 'owner_cnic', 'nic')
+            phone = get_val('phone', 'contact_number', 'contact', 'mobile', 'owner_phone')
+            email = get_val('email', 'owner_email')
+            address = get_val('address', 'site_address', 'location_address')
+            district = get_val('district', 'district_name', default='Lahore')
+            tehsil = get_val('tehsil', 'tehsil_name', default=district)
+            union_council = get_val('union_council', 'uc')
+            provided_case_id = get_val('house_id', 'case_id', 'id')
+
+            # Validation: Owner Name required
+            if not owner_name:
+                failed_records.append({
+                    'row_index': idx,
+                    'owner_name': owner_name or '(Missing)',
+                    'cnic': cnic or '(Missing)',
+                    'reason': 'Owner Name is required.',
+                })
+                continue
+
+            # Standardize CNIC if present
+            cleaned_cnic = re.sub(r'[^0-9]', '', cnic)
+            if cleaned_cnic and len(cleaned_cnic) == 13:
+                formatted_cnic = f'{cleaned_cnic[:5]}-{cleaned_cnic[5:12]}-{cleaned_cnic[12]}'
+            elif cnic:
+                formatted_cnic = cnic
+            else:
+                formatted_cnic = ''
+
+            # Duplicate Check: CNIC or House ID
+            is_duplicate = False
+            duplicate_reason = ''
+            existing_ref = ''
+
+            if formatted_cnic and (formatted_cnic in existing_cnics or formatted_cnic in seen_in_batch_cnic):
+                is_duplicate = True
+                duplicate_reason = f'Duplicate CNIC: {formatted_cnic} is already registered in the system.'
+                existing_match = Project.objects.filter(owner_cnic=formatted_cnic).first()
+                existing_ref = existing_match.case_id if existing_match else 'Batch duplicate'
+            elif provided_case_id and (provided_case_id in existing_case_ids or provided_case_id in seen_in_batch_id):
+                is_duplicate = True
+                duplicate_reason = f'Duplicate House ID: {provided_case_id} already exists.'
+                existing_ref = provided_case_id
+
+            if is_duplicate:
+                duplicate_records.append({
+                    'row_index': idx,
+                    'owner_name': owner_name,
+                    'cnic': formatted_cnic or '(None)',
+                    'existing_house_id': existing_ref,
+                    'reason': duplicate_reason,
+                })
+                continue
+
+            # Parse physical specs
+            try:
+                plot_size = float(get_val('plot_size', 'plot_size_marla', 'plotsize', default='5'))
+            except (ValueError, TypeError):
+                plot_size = 5.0
+
+            try:
+                covered_area = float(get_val('covered_area', 'covered_area_sqft', 'coveredarea', default='1100'))
+            except (ValueError, TypeError):
+                covered_area = 1100.0
+
+            try:
+                floors = int(get_val('floors', 'number_of_floors', default='1'))
+            except (ValueError, TypeError):
+                floors = 1
+
+            # Parse coordinates & validate
+            def_lat, def_lng = district_coords.get(district, (31.5204, 74.3587))
+            try:
+                lat = float(get_val('latitude', 'lat', default=str(def_lat)))
+                if not (-90 <= lat <= 90):
+                    lat = def_lat
+            except (ValueError, TypeError):
+                lat = def_lat
+
+            try:
+                lng = float(get_val('longitude', 'lng', 'long', default=str(def_lng)))
+                if not (-180 <= lng <= 180):
+                    lng = def_lng
+            except (ValueError, TypeError):
+                lng = def_lng
+
+            # Parse Progress
+            try:
+                progress_pct = float(get_val('progress', 'progress_pct', 'overall_progress_pct', default='0'))
+                progress_pct = max(0.0, min(100.0, progress_pct))
+            except (ValueError, TypeError):
+                progress_pct = 0.0
+
+            # Parse Status & Stage
+            current_stage = get_val('stage', 'current_stage', default='Site Preparation')
+            house_status = get_val('status', 'house_status', default='Pending')
+            loan_status = get_val('loan_status', default='Pending')
+            safety_status = get_val('safety_status', default='Safe')
+            remarks = get_val('remarks', 'notes', default='')
+
+            try:
+                loan_approved = Decimal(str(get_val('loan_approved', 'approved_loan', default='1500000')))
+            except Exception:
+                loan_approved = Decimal('1500000.00')
+
+            try:
+                loan_disbursed = Decimal(str(get_val('loan_disbursed', 'disbursed_loan', default='0')))
+            except Exception:
+                loan_disbursed = Decimal('0.00')
+
+            # Engineer Matching
+            engineer_input = get_val('assigned_engineer', 'engineer', 'engineer_name')
+            matched_user_engineer = None
+            matched_junior_engineer = None
+            final_engineer_name = engineer_input
+
+            if engineer_input:
+                eng_clean = engineer_input.lower().replace('engr.', '').replace('engr', '').strip()
+                for je in all_juniors:
+                    if eng_clean in je.name.lower():
+                        matched_junior_engineer = je
+                        final_engineer_name = je.name
+                        break
+                if not matched_junior_engineer:
+                    for fe in all_field_users:
+                        full_n = (fe.get_full_name() or fe.username).lower()
+                        if eng_clean in full_n:
+                            matched_user_engineer = fe
+                            final_engineer_name = fe.get_full_name() or fe.username
+                            break
+
+            # Auto-generate or assign sequential House ID
+            if provided_case_id and provided_case_id not in existing_case_ids:
+                case_id = provided_case_id
+            else:
+                case_id = generate_unique_house_id()
+
+            # Create House Project with transaction safety
+            try:
+                with transaction.atomic():
+                    project = Project.objects.create(
+                        case_id=case_id,
+                        owner_name=owner_name,
+                        owner_cnic=formatted_cnic,
+                        owner_phone=phone,
+                        owner_email=email,
+                        division='Punjab',
+                        district=district,
+                        tehsil=tehsil,
+                        union_council=union_council,
+                        address=address,
+                        latitude=lat,
+                        longitude=lng,
+                        project_type='UNDER_CONSTRUCTION' if progress_pct > 0 else 'PENDING',
+                        plot_size_marla=plot_size,
+                        covered_area_sqft=covered_area,
+                        floors=floors,
+                        loan_approved=loan_approved,
+                        loan_disbursed=loan_disbursed,
+                        loan_status=loan_status,
+                        status=house_status,
+                        current_stage=current_stage,
+                        overall_progress_pct=progress_pct,
+                        safety_status=safety_status,
+                        remarks=remarks,
+                        assigned_engineer=matched_user_engineer,
+                        assigned_junior_engineer=matched_junior_engineer,
+                        assigned_engineer_name=final_engineer_name or 'Unassigned',
+                        created_by=request.user if request.user.is_authenticated else None,
+                    )
+
+                    # Create standard 15 milestones
+                    milestone_names = [
+                        (1, 'Site Preparation', 'Site clearance, leveling and initial ground preparation'),
+                        (2, 'Layout Marking', 'Demarcation and layout marking according to approved plan'),
+                        (3, 'Foundation', 'Excavation, lean concrete, foundation masonry, and backfilling'),
+                        (4, 'DPC (Damp Proof Course)', 'DPC concrete casting and bitumen coating membrane'),
+                        (5, 'Brick Masonry', 'Ground floor brick masonry up to lintel beam level'),
+                        (6, 'Lintel & Beams', 'Reinforced lintel casting and beam reinforcement'),
+                        (7, 'Roof Slab', 'Formwork, steel reinforcement binding and concrete pouring'),
+                        (8, 'Plastering', 'Internal and external cement-sand plaster finish'),
+                        (9, 'Flooring', 'Base concrete, tile/marble/mosaic laying and grouting'),
+                        (10, 'Plumbing & Drainage', 'Water supply piping, drainage, sanitary fixtures installation'),
+                        (11, 'Electrical Installation', 'Conduit wiring, switchboards, distribution board setup'),
+                        (12, 'Doors & Windows (Finishing)', 'Wood/aluminum frames, shutters, glass and hardware fitment'),
+                        (13, 'Septic Tank & Sanitation', 'Septic tank construction, connection and wastewater testing'),
+                        (14, 'Final Inspection & Snagging', 'Structural audit, safety checks and compliance certification'),
+                        (15, 'House Construction Completed', 'Handover ready, all finishes and utility connections verified'),
+                    ]
+
+                    completed_count = int(round((progress_pct / 100.0) * 15))
+                    for m_no, title, desc in milestone_names:
+                        is_completed = m_no <= completed_count
+                        ProjectMilestone.objects.create(
+                            project=project,
+                            milestone_no=m_no,
+                            title=title,
+                            description=desc,
+                            is_completed=is_completed,
+                            completed_at=timezone.now() if is_completed else None,
+                        )
+
+                    project.current_milestone_no = min(15, max(1, completed_count + 1))
+                    project.save(update_fields=['current_milestone_no'])
+
+                    # Mark seen
+                    if formatted_cnic:
+                        existing_cnics.add(formatted_cnic)
+                        seen_in_batch_cnic.add(formatted_cnic)
+                    existing_case_ids.add(case_id)
+                    seen_in_batch_id.add(case_id)
+
+                    created_projects.append(project)
+
+            except Exception as e:
+                failed_records.append({
+                    'row_index': idx,
+                    'owner_name': owner_name,
+                    'cnic': formatted_cnic,
+                    'reason': f'Database error: {str(e)}',
+                })
+
+        # Audit log
+        if created_projects:
+            log_audit(
+                user=request.user,
+                action=AuditAction.CREATE,
+                entity_type='bulk_house_import',
+                entity_id=created_projects[0].id,
+                after={'imported_count': len(created_projects), 'total_rows': total_rows},
+                request=request,
+            )
+
+        serialized_houses = ProjectListSerializer(created_projects, many=True).data
+
+        summary = {
+            'total_rows': total_rows,
+            'successful_count': len(created_projects),
+            'failed_count': len(failed_records),
+            'duplicate_count': len(duplicate_records),
+            'imported_houses': serialized_houses,
+            'failed_records': failed_records,
+            'duplicate_records': duplicate_records,
+        }
+
+        return success_response(
+            data=summary,
+            message=f'Bulk import completed: {len(created_projects)} imported, {len(duplicate_records)} duplicate(s), {len(failed_records)} failed.',
+            status_code=status.HTTP_201_CREATED if created_projects else status.HTTP_200_OK,
+        )
+

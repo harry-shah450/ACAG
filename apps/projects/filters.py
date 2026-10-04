@@ -1,15 +1,26 @@
 import django_filters
+from django.db.models import Q
 from apps.projects.models import Project
 
 
 class ProjectFilter(django_filters.FilterSet):
     division = django_filters.CharFilter(field_name='division', lookup_expr='iexact')
     district = django_filters.CharFilter(field_name='district', lookup_expr='iexact')
+    tehsil = django_filters.CharFilter(field_name='tehsil', lookup_expr='icontains')
+    status = django_filters.CharFilter(field_name='status', lookup_expr='iexact')
+    current_stage = django_filters.CharFilter(field_name='current_stage', lookup_expr='icontains')
+    stage = django_filters.CharFilter(field_name='current_stage', lookup_expr='icontains')
+    loan_status = django_filters.CharFilter(field_name='loan_status', lookup_expr='icontains')
+    safety_status = django_filters.CharFilter(field_name='safety_status', lookup_expr='iexact')
     project_type = django_filters.CharFilter(field_name='project_type', lookup_expr='exact')
     assigned_engineer = django_filters.NumberFilter(field_name='assigned_engineer__id', lookup_expr='exact')
     assigned_engineer_id = django_filters.NumberFilter(field_name='assigned_engineer__id', lookup_expr='exact')
+    assigned_junior_engineer = django_filters.NumberFilter(field_name='assigned_junior_engineer__id', lookup_expr='exact')
     assigned_engineer_username = django_filters.CharFilter(
         field_name='assigned_engineer__username', lookup_expr='icontains'
+    )
+    assigned_engineer_name = django_filters.CharFilter(
+        field_name='assigned_engineer_name', lookup_expr='icontains'
     )
     site_risk_flag = django_filters.BooleanFilter(field_name='site_risk_flag')
     plans_status = django_filters.CharFilter(field_name='plans_status', lookup_expr='exact')
@@ -28,6 +39,8 @@ class ProjectFilter(django_filters.FilterSet):
 
     case_id = django_filters.CharFilter(field_name='case_id', lookup_expr='icontains')
     owner_name = django_filters.CharFilter(field_name='owner_name', lookup_expr='icontains')
+    owner_cnic = django_filters.CharFilter(field_name='owner_cnic', lookup_expr='icontains')
+    search = django_filters.CharFilter(method='filter_search')
 
     phase = django_filters.CharFilter(method='filter_by_phase')
 
@@ -36,15 +49,37 @@ class ProjectFilter(django_filters.FilterSet):
         fields = [
             'division',
             'district',
+            'tehsil',
+            'status',
+            'current_stage',
+            'stage',
+            'loan_status',
+            'safety_status',
             'project_type',
             'assigned_engineer',
+            'assigned_junior_engineer',
             'site_risk_flag',
             'plans_status',
             'environment_status',
             'quality_status',
             'case_id',
             'owner_name',
+            'owner_cnic',
         ]
+
+    def filter_search(self, queryset, name, value):
+        if not value:
+            return queryset
+        val = value.strip()
+        return queryset.filter(
+            Q(case_id__icontains=val)
+            | Q(owner_name__icontains=val)
+            | Q(owner_cnic__icontains=val)
+            | Q(owner_phone__icontains=val)
+            | Q(district__icontains=val)
+            | Q(tehsil__icontains=val)
+            | Q(assigned_engineer_name__icontains=val)
+        )
 
     def filter_by_phase(self, queryset, name, value):
         if not value:
