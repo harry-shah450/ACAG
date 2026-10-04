@@ -24,13 +24,22 @@ export const engineersApi = {
 };
 
 
-// ==================== PROJECTS ====================
+// ==================== PROJECTS & HOUSES ====================
 export const projectsApi = {
   getProjects: (params) => apiClient.get('/projects/', { params }),
   getProject: (id) => apiClient.get(`/projects/${id}/`),
   createProject: (data) => apiClient.post('/projects/', data),
   updateProject: (id, data) => apiClient.patch(`/projects/${id}/`, data),
   deleteProject: (id) => apiClient.delete(`/projects/${id}/`),
+  bulkImport: (formDataOrJson) => {
+    if (formDataOrJson instanceof FormData) {
+      return apiClient.post('/projects/bulk_import/', formDataOrJson, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    }
+    return apiClient.post('/projects/bulk_import/', formDataOrJson);
+  },
+  downloadTemplate: () => apiClient.get('/projects/download_template/', { responseType: 'blob' }),
   
   getMilestones: (id) => apiClient.get(`/projects/${id}/milestones/`),
   completeMilestone: (id, milestoneNo, data) =>
@@ -43,6 +52,23 @@ export const projectsApi = {
   uploadPhotos: (id, data) => apiClient.post(`/projects/${id}/photos/`, data),
 
   updateCompliance: (id, data) => apiClient.patch(`/projects/${id}/compliance/`, data),
+};
+
+export const housesApi = {
+  getHouses: (params) => apiClient.get('/projects/', { params }),
+  getHouse: (id) => apiClient.get(`/projects/${id}/`),
+  createHouse: (data) => apiClient.post('/projects/', data),
+  updateHouse: (id, data) => apiClient.patch(`/projects/${id}/`, data),
+  deleteHouse: (id) => apiClient.delete(`/projects/${id}/`),
+  bulkImport: (formDataOrJson) => {
+    if (formDataOrJson instanceof FormData) {
+      return apiClient.post('/projects/bulk_import/', formDataOrJson, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    }
+    return apiClient.post('/projects/bulk_import/', formDataOrJson);
+  },
+  downloadTemplate: () => apiClient.get('/projects/download_template/', { responseType: 'blob' }),
 };
 
 // ==================== COMPLIANCE & SITE RISK ====================
