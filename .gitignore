@@ -33,9 +33,18 @@ db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
+backend/staticfiles/
+backend/media/
+backend/db.sqlite3
 
 # Environment variables
 .env
+.env.*
+*.env
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
 
 # Node / React Frontend
 node_modules/
@@ -64,9 +73,11 @@ nosetests.xml
 coverage.xml
 *.cover
 .pytest_cache/
-vigilant-site-backend/
 
 # Mobile App (Completely independent)
 MOBILE ACAG/
 Mobile_ACAG/
 *.docx
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
