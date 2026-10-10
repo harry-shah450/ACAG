@@ -38,8 +38,6 @@ backend/media/
 backend/db.sqlite3
 
 # Environment variables
-.env
-.env.*
 *.env
 backend/.env
 backend/.env.*
@@ -54,7 +52,6 @@ frontend/dist/
 
 # IDE
 .idea/
-.vscode/
 *.swp
 *.swo
 *~
@@ -81,3 +78,4 @@ Mobile_ACAG/
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
+config.bat

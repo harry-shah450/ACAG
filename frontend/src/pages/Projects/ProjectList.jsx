@@ -413,18 +413,18 @@ export const ProjectList = () => {
           PROJECTS TABLE
          ========================================================================= */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full min-w-0">
+          <table className="w-full text-xs min-w-[850px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase tracking-wider">
-                <th className="py-3.5 px-6">{t('colHouseId')}</th>
-                <th className="py-3.5 px-4">{t('colProjectName')}</th>
-                <th className="py-3.5 px-4">{t('colDivision')}</th>
-                <th className="py-3.5 px-4">{t('colEngineer')}</th>
-                <th className="py-3.5 px-4">{t('colProgress')}</th>
-                <th className="py-3.5 px-4">{t('colBudget')}</th>
-                <th className="py-3.5 px-4">{t('colStatus')}</th>
-                <th className="py-3.5 px-6 text-right">{t('colActions')}</th>
+                <th className={`py-3.5 px-6 ${isRTL ? 'text-right' : 'text-left'}`}>{t('colHouseId')}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('colProjectName')}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('colDivision')}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('colEngineer')}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('colProgress')}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('colBudget')}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('colStatus')}</th>
+                <th className={`py-3.5 px-6 ${isRTL ? 'text-left' : 'text-right'}`}>{t('colActions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

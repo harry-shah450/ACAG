@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 export const ReportsAnalytics = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const { houses, loans, workers, safetyIssues, engineers, visits } = useDashboardData();
 
   const [reportDomain, setReportDomain] = useState('CONSTRUCTION'); // CONSTRUCTION | LOANS | LABOUR | SAFETY | ENGINEERS
@@ -274,18 +274,19 @@ export const ReportsAnalytics = () => {
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
-                  <th className="py-3 px-5">House ID</th>
-                  <th className="py-3 px-4">Owner Name</th>
-                  <th className="py-3 px-4">District</th>
-                  <th className="py-3 px-4">Current Stage</th>
-                  <th className="py-3 px-4">Progress %</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-5 text-right">Loan Disbursed</th>
-                </tr>
-              </thead>
+            <div className="overflow-x-auto w-full min-w-0">
+              <table className="w-full text-xs min-w-[700px]">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
+                    <th className={`py-3 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>House ID</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Owner Name</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>District</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Current Stage</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Progress %</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Status</th>
+                    <th className={`py-3 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>Loan Disbursed</th>
+                  </tr>
+                </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredHouses.length === 0 ? (
                   <tr>
@@ -314,6 +315,7 @@ export const ReportsAnalytics = () => {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}
@@ -345,40 +347,42 @@ export const ReportsAnalytics = () => {
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
-                  <th className="py-3 px-5">Loan ID</th>
-                  <th className="py-3 px-4">Applicant</th>
-                  <th className="py-3 px-4">House ID</th>
-                  <th className="py-3 px-4">Approved (PKR)</th>
-                  <th className="py-3 px-4">Disbursed (PKR)</th>
-                  <th className="py-3 px-4">Remaining (PKR)</th>
-                  <th className="py-3 px-5 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredLoans.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="py-8 text-center text-slate-400 font-bold">
-                      No loans matching your search query.
-                    </td>
+            <div className="overflow-x-auto w-full min-w-0">
+              <table className="w-full text-xs min-w-[700px]">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
+                    <th className={`py-3 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>Loan ID</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Applicant</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>House ID</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Approved (PKR)</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Disbursed (PKR)</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Remaining (PKR)</th>
+                    <th className={`py-3 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>Status</th>
                   </tr>
-                ) : (
-                  filteredLoans.map((l) => (
-                    <tr key={l.id} className="hover:bg-slate-50/80">
-                      <td className="py-3.5 px-5 font-mono font-black text-slate-900">{l.id}</td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">{l.applicant}</td>
-                      <td className="py-3.5 px-4 font-mono font-bold text-orange-700">{l.houseId}</td>
-                      <td className="py-3.5 px-4 font-mono">PKR {(l.approvedAmount / 1000).toLocaleString()}k</td>
-                      <td className="py-3.5 px-4 font-mono font-black text-emerald-700">PKR {((l.disbursedAmount || 750000) / 1000).toLocaleString()}k</td>
-                      <td className="py-3.5 px-4 font-mono text-slate-600">PKR {((l.remainingAmount || 750000) / 1000).toLocaleString()}k</td>
-                      <td className="py-3.5 px-5 text-right font-bold text-slate-800">{l.status}</td>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredLoans.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-8 text-center text-slate-400 font-bold">
+                        No loans matching your search query.
+                      </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    filteredLoans.map((l) => (
+                      <tr key={l.id} className="hover:bg-slate-50/80">
+                        <td className="py-3.5 px-5 font-mono font-black text-slate-900">{l.id}</td>
+                        <td className="py-3.5 px-4 font-bold text-slate-900">{l.applicant}</td>
+                        <td className="py-3.5 px-4 font-mono font-bold text-orange-700">{l.houseId}</td>
+                        <td className="py-3.5 px-4 font-mono">PKR {(l.approvedAmount / 1000).toLocaleString()}k</td>
+                        <td className="py-3.5 px-4 font-mono font-black text-emerald-700">PKR {((l.disbursedAmount || 750000) / 1000).toLocaleString()}k</td>
+                        <td className="py-3.5 px-4 font-mono text-slate-600">PKR {((l.remainingAmount || 750000) / 1000).toLocaleString()}k</td>
+                        <td className="py-3.5 px-5 text-right font-bold text-slate-800">{l.status}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -414,40 +418,42 @@ export const ReportsAnalytics = () => {
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
-                  <th className="py-3 px-5">Worker ID</th>
-                  <th className="py-3 px-4">Artisan Name</th>
-                  <th className="py-3 px-4">Trade Skill</th>
-                  <th className="py-3 px-4">Assigned House</th>
-                  <th className="py-3 px-4">Safety Modules</th>
-                  <th className="py-3 px-5 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredWorkers.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-8 text-center text-slate-400 font-bold">
-                      No workers found matching your search.
-                    </td>
+            <div className="overflow-x-auto w-full min-w-0">
+              <table className="w-full text-xs min-w-[700px]">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
+                    <th className={`py-3 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>Worker ID</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Artisan Name</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Trade Skill</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Assigned House</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Safety Modules</th>
+                    <th className={`py-3 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>Status</th>
                   </tr>
-                ) : (
-                  filteredWorkers.map((w) => (
-                    <tr key={w.id} className="hover:bg-slate-50/80">
-                      <td className="py-3.5 px-5 font-mono font-black text-slate-900">{w.id}</td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">{w.name}</td>
-                      <td className="py-3.5 px-4 text-blue-700 font-bold">{w.skill}</td>
-                      <td className="py-3.5 px-4 font-mono text-orange-700">{w.assignedHouseId}</td>
-                      <td className="py-3.5 px-4 text-slate-700 font-medium">
-                        {w.completedTopics ? w.completedTopics.join(', ') : 'Scaffolding & PPE'}
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredWorkers.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-slate-400 font-bold">
+                        No workers found matching your search.
                       </td>
-                      <td className="py-3.5 px-5 text-right font-bold text-emerald-700">{w.trainingStatus}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    filteredWorkers.map((w) => (
+                      <tr key={w.id} className="hover:bg-slate-50/80">
+                        <td className="py-3.5 px-5 font-mono font-black text-slate-900">{w.id}</td>
+                        <td className="py-3.5 px-4 font-bold text-slate-900">{w.name}</td>
+                        <td className="py-3.5 px-4 text-blue-700 font-bold">{w.skill}</td>
+                        <td className="py-3.5 px-4 font-mono text-orange-700">{w.assignedHouseId}</td>
+                        <td className="py-3.5 px-4 text-slate-700 font-medium">
+                          {w.completedTopics ? w.completedTopics.join(', ') : 'Scaffolding & PPE'}
+                        </td>
+                        <td className="py-3.5 px-5 text-right font-bold text-emerald-700">{w.trainingStatus}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -477,38 +483,40 @@ export const ReportsAnalytics = () => {
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
-                  <th className="py-3 px-5">Incident ID</th>
-                  <th className="py-3 px-4">House ID</th>
-                  <th className="py-3 px-4">Defect Description</th>
-                  <th className="py-3 px-4">Severity</th>
-                  <th className="py-3 px-4">Assigned Engineer</th>
-                  <th className="py-3 px-5 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredSafety.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-8 text-center text-slate-400 font-bold">
-                      No safety issues matching your search.
-                    </td>
+            <div className="overflow-x-auto w-full min-w-0">
+              <table className="w-full text-xs min-w-[700px]">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
+                    <th className={`py-3 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>Incident ID</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>House ID</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Defect Description</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Severity</th>
+                    <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Assigned Engineer</th>
+                    <th className={`py-3 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>Status</th>
                   </tr>
-                ) : (
-                  filteredSafety.map((s) => (
-                    <tr key={s.id} className="hover:bg-slate-50/80">
-                      <td className="py-3.5 px-5 font-mono font-black text-slate-900">{s.id}</td>
-                      <td className="py-3.5 px-4 font-mono text-orange-700">{s.houseId}</td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">{s.issueType}</td>
-                      <td className="py-3.5 px-4 font-bold text-rose-700">{s.severity}</td>
-                      <td className="py-3.5 px-4 text-slate-700">{s.assignedEngineer}</td>
-                      <td className="py-3.5 px-5 text-right font-bold text-slate-800">{s.status}</td>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredSafety.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-slate-400 font-bold">
+                        No safety issues matching your search.
+                      </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    filteredSafety.map((s) => (
+                      <tr key={s.id} className="hover:bg-slate-50/80">
+                        <td className="py-3.5 px-5 font-mono font-black text-slate-900">{s.id}</td>
+                        <td className="py-3.5 px-4 font-mono text-orange-700">{s.houseId}</td>
+                        <td className="py-3.5 px-4 font-bold text-slate-900">{s.issueType}</td>
+                        <td className="py-3.5 px-4 font-bold text-rose-700">{s.severity}</td>
+                        <td className="py-3.5 px-4 text-slate-700">{s.assignedEngineer}</td>
+                        <td className={`py-3.5 px-5 ${isRTL ? 'text-left' : 'text-right'} font-bold text-slate-800`}>{s.status}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -518,40 +526,42 @@ export const ReportsAnalytics = () => {
          ========================================================================= */}
       {reportDomain === 'ENGINEERS' && (
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
-                <th className="py-3 px-5">Engineer Name</th>
-                <th className="py-3 px-4">PEC Reg No</th>
-                <th className="py-3 px-4">Assigned Division</th>
-                <th className="py-3 px-4">Assigned Houses</th>
-                <th className="py-3 px-4">Completed Inspections</th>
-                <th className="py-3 px-4">Labour Sessions</th>
-                <th className="py-3 px-5 text-right">Safety Index</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredEngineers.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400 font-bold">
-                    No engineers found matching your search.
-                  </td>
+          <div className="overflow-x-auto w-full min-w-0">
+            <table className="w-full text-xs min-w-[750px]">
+              <thead>
+                <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase">
+                  <th className={`py-3 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>Engineer Name</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>PEC Reg No</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Assigned Division</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Assigned Houses</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Completed Inspections</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Labour Sessions</th>
+                  <th className={`py-3 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>Safety Index</th>
                 </tr>
-              ) : (
-                filteredEngineers.map((e) => (
-                  <tr key={e.id} className="hover:bg-slate-50/80">
-                    <td className="py-3.5 px-5 font-black text-slate-900">{e.name}</td>
-                    <td className="py-3.5 px-4 font-mono font-bold text-slate-600">{e.pecNo}</td>
-                    <td className="py-3.5 px-4 font-bold text-slate-800">{e.assignedDivision}</td>
-                    <td className="py-3.5 px-4 font-mono font-bold text-orange-700">{e.assignedHousesCount}</td>
-                    <td className="py-3.5 px-4 font-mono font-black text-emerald-700">{e.completedVisits}</td>
-                    <td className="py-3.5 px-4 font-mono text-purple-900">{e.trainingSessionsConducted}</td>
-                    <td className="py-3.5 px-5 text-right font-black text-emerald-700">{e.safetyComplianceScore || 98}%</td>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredEngineers.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-8 text-center text-slate-400 font-bold">
+                      No engineers found matching your search.
+                    </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filteredEngineers.map((e) => (
+                    <tr key={e.id} className="hover:bg-slate-50/80">
+                      <td className="py-3.5 px-5 font-black text-slate-900">{e.name}</td>
+                      <td className="py-3.5 px-4 font-mono font-bold text-slate-600">{e.pecNo}</td>
+                      <td className="py-3.5 px-4 font-bold text-slate-800">{e.assignedDivision}</td>
+                      <td className="py-3.5 px-4 font-mono font-bold text-orange-700">{e.assignedHousesCount}</td>
+                      <td className="py-3.5 px-4 font-mono font-black text-emerald-700">{e.completedVisits}</td>
+                      <td className="py-3.5 px-4 font-mono text-purple-900">{e.trainingSessionsConducted}</td>
+                      <td className={`py-3.5 px-5 ${isRTL ? 'text-left' : 'text-right'} font-black text-emerald-700`}>{e.safetyComplianceScore || 98}%</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

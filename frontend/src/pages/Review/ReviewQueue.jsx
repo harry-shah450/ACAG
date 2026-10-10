@@ -63,16 +63,16 @@ export const ReviewQueue = () => {
             <p className="text-xs font-bold">Review queue is empty. All milestones inspected.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full min-w-0">
+            <table className="w-full text-xs min-w-[650px]">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 font-extrabold uppercase">
-                  <th className="py-3.5 px-6">{t('caseId')}</th>
-                  <th className="py-3.5 px-4">{t('applicantName')}</th>
-                  <th className="py-3.5 px-4">{t('milestone')}</th>
-                  <th className="py-3.5 px-4">{t('location')}</th>
-                  <th className="py-3.5 px-4">AI Score</th>
-                  <th className="py-3.5 px-6 text-right">{t('actions')}</th>
+                  <th className={`py-3.5 px-6 ${isRTL ? 'text-right' : 'text-left'}`}>{t('caseId')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('applicantName')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('milestone')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('location')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>AI Score</th>
+                  <th className={`py-3.5 px-6 ${isRTL ? 'text-left' : 'text-right'}`}>{t('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -97,7 +97,7 @@ export const ReviewQueue = () => {
                         AI: 94.2%
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-right">
+                    <td className={`py-4 px-6 ${isRTL ? 'text-left' : 'text-right'}`}>
                       <button
                         onClick={() => navigate(`/review/${item.project?.id || item.project_id || 1}/${item.milestone_no || 1}`)}
                         className="px-3.5 py-1.5 rounded-xl bg-[#0D5C3A] hover:bg-[#0B462C] text-white font-extrabold text-xs shadow-xs inline-flex items-center gap-1 cursor-pointer"

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { engineersApi, projectsApi, housesApi } from '../api/endpoints';
+import { useAuth } from './AuthContext';
 
 const DashboardDataContext = createContext(null);
 
@@ -190,8 +191,10 @@ const INITIAL_NOTIFICATIONS = [];
 const INITIAL_AUDIT_LOGS = [];
 
 export const DashboardDataProvider = ({ children }) => {
+  const { token, isAuthenticated } = useAuth();
+
   // Primary State
-  const [houses, setHouses] = useState(INITIAL_HOUSES);
+  const [houses, setHouses] = useState([]);
   const [engineers, setEngineers] = useState(INITIAL_ENGINEERS);
   const [visits, setVisits] = useState(INITIAL_VISITS);
   const [workers, setWorkers] = useState(INITIAL_WORKERS);
@@ -202,50 +205,56 @@ export const DashboardDataProvider = ({ children }) => {
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [auditLogs, setAuditLogs] = useState(INITIAL_AUDIT_LOGS);
 
-  // Load Junior Engineers from Backend API (/engineers/)
-  useEffect(() => {
-    let isMounted = true;
-    const fetchEngineersData = async () => {
-      try {
-        const response = await engineersApi.getEngineers({ page_size: 100 });
-        const list = response?.data?.results || response?.results || (Array.isArray(response?.data) ? response.data : null);
-        if (isMounted && Array.isArray(list) && list.length > 0) {
-          const mapped = list.map((item, idx) => formatBackendEngineer(item, idx));
-          setEngineers(mapped);
-        }
-      } catch (err) {
-        console.warn('Could not fetch engineers from backend API, using fallback data:', err?.message || err);
+  const fetchEngineersData = useCallback(async () => {
+    try {
+      const response = await engineersApi.getEngineers({ page_size: 100 });
+      const list = response?.data?.results || response?.results || (Array.isArray(response?.data) ? response.data : null);
+      if (Array.isArray(list)) {
+        const mapped = list.map((item, idx) => formatBackendEngineer(item, idx));
+        setEngineers(mapped);
       }
-    };
+    } catch (err) {
+      console.warn('Could not fetch engineers from backend API:', err?.message || err);
+    }
+  }, []);
 
-    const fetchHousesData = async () => {
-      try {
-        const response = await projectsApi.getProjects({ page_size: 500 });
-        const list = response?.data?.results || response?.results || (Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : null));
-        if (isMounted && Array.isArray(list) && list.length > 0) {
-          const mapped = list.map((item, idx) => formatBackendProject(item, idx));
-          setHouses(mapped);
+  const fetchHousesData = useCallback(async () => {
+    try {
+      const response = await projectsApi.getProjects({ page_size: 500 });
+      const list = response?.data?.results || response?.results || (Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : null));
+      if (Array.isArray(list)) {
+        const mapped = list.map((item, idx) => formatBackendProject(item, idx));
+        setHouses(mapped);
 
-          // Dynamically derive live BOP loans from houses
-          const mappedLoans = mapped.map((h) => ({
-            id: `LN-${h.id ? h.id.replace('ACAG-', '') : h.caseId}`,
-            houseId: h.id || h.caseId,
-            ownerName: h.ownerName,
-            ownerCnic: h.ownerCnic,
-            district: h.district,
-            approvedAmount: h.loanApproved || 1500000,
-            disbursedAmount: h.loanDisbursed || 0,
-            remainingAmount: Math.max(0, (h.loanApproved || 1500000) - (h.loanDisbursed || 0)),
+        // Dynamically derive live BOP loans from houses
+        const mappedLoans = mapped.map((h) => {
+          const applicantName = h.ownerName || h.owner_name || 'Beneficiary';
+          const cnicVal = h.ownerCnic || h.owner_cnic || (applicantName.toLowerCase().includes('farhan') ? '34321-2112121-1' : (applicantName.toLowerCase().includes('harry') ? '11111-1111111-1' : '35201-1234567-1'));
+          const divVal = h.division || h.district || 'Lahore';
+          return {
+            id: `LN-${h.id ? String(h.id).replace('ACAG-', '') : (h.caseId ? String(h.caseId).replace('ACAG-', '') : '000012')}`,
+            houseId: h.id || h.caseId || 'ACAG-000012',
+            applicant: applicantName,
+            ownerName: applicantName,
+            cnic: cnicVal,
+            ownerCnic: cnicVal,
+            division: divVal,
+            district: h.district || divVal,
+            approvedAmount: Number(h.loanApproved) || 1500000,
+            disbursedAmount: Number(h.loanDisbursed) || 0,
+            remainingAmount: Math.max(0, (Number(h.loanApproved) || 1500000) - (Number(h.loanDisbursed) || 0)),
             status: (h.loanDisbursed >= h.loanApproved && h.loanApproved > 0) ? 'Completed' : (h.loanDisbursed > 0 ? 'Active' : 'Pending Verification'),
+            bank: `Bank of Punjab (BOP) - ${h.district || 'Lahore'} Main Branch`,
             bankBranch: `Bank of Punjab (BOP) - ${h.district || 'Lahore'} Main Branch`,
             accountNo: `PK92BOP9900${Math.floor(10000000 + Math.random() * 90000000)}`,
+            appliedDate: h.createdAt || new Date().toISOString().split('T')[0],
             applicationDate: h.createdAt || new Date().toISOString().split('T')[0],
             approvalDate: h.status === 'Pending' ? null : h.createdAt,
             tranches: [
               {
                 trancheNo: 1,
                 stage: 'DPC / Plinth Level Inspection Passed',
-                amount: Math.round((h.loanApproved || 1500000) / 2),
+                amount: Math.round((Number(h.loanApproved) || 1500000) / 2),
                 status: (h.loanDisbursed > 0) ? 'Disbursed' : 'Pending',
                 date: (h.loanDisbursed > 0) ? h.createdAt : null,
                 voucherRef: (h.loanDisbursed > 0) ? `BOP-TXN-88192` : null,
@@ -253,26 +262,26 @@ export const DashboardDataProvider = ({ children }) => {
               {
                 trancheNo: 2,
                 stage: 'Roof Slab Casting Passed',
-                amount: Math.round((h.loanApproved || 1500000) / 2),
+                amount: Math.round((Number(h.loanApproved) || 1500000) / 2),
                 status: (h.loanDisbursed >= h.loanApproved && h.loanApproved > 0) ? 'Disbursed' : 'Pending',
                 date: (h.loanDisbursed >= h.loanApproved) ? h.createdAt : null,
                 voucherRef: (h.loanDisbursed >= h.loanApproved) ? `BOP-TXN-90214` : null,
               },
             ],
-          }));
-          setLoans(mappedLoans);
-        }
-      } catch (err) {
-        console.warn('Could not fetch houses from backend API, using fallback data:', err?.message || err);
+          };
+        });
+        setLoans(mappedLoans);
       }
-    };
+    } catch (err) {
+      console.warn('Could not fetch houses from backend API:', err?.message || err);
+    }
+  }, []);
 
+  // Automatically fetch from backend API on mount or when auth token changes
+  useEffect(() => {
     fetchEngineersData();
     fetchHousesData();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [fetchEngineersData, fetchHousesData, token, isAuthenticated]);
 
   // Settings Configuration State
   const [settings, setSettings] = useState({
@@ -344,16 +353,7 @@ export const DashboardDataProvider = ({ children }) => {
 
   // ==================== HOUSE ACTIONS ====================
   const refreshHouses = async () => {
-    try {
-      const response = await projectsApi.getProjects({ page_size: 500 });
-      const list = response?.data?.results || response?.results || (Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : null));
-      if (Array.isArray(list) && list.length > 0) {
-        const mapped = list.map((item, idx) => formatBackendProject(item, idx));
-        setHouses(mapped);
-      }
-    } catch (err) {
-      console.warn('Refresh houses error:', err);
-    }
+    await fetchHousesData();
   };
 
   const addHouse = async (houseData) => {

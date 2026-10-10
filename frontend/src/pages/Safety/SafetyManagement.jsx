@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 
 export const SafetyManagement = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const {
     safetyIssues,
     houses,
@@ -131,18 +131,20 @@ export const SafetyManagement = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
-              Safety & HSE Management
+              {isRTL ? 'سیفٹی اور ماحولیاتی تحفظ (HSE)' : 'Safety & HSE Management'}
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-rose-100 text-rose-800">
-              Zero Tolerance Protocol
+              {isRTL ? 'زیرو ٹالرینس پروٹوکول' : 'Zero Tolerance Protocol'}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Monitor HSE hazards, worker PPE compliance, scaffolding integrity, and dispatch immediate stop-work or rectification orders
+            {isRTL
+              ? 'سائٹ پر حفاظتی خطرات، مزدوروں کے حفاظتی سامان کی جانچ اور فوری اصلاحی احکامات'
+              : 'Monitor HSE hazards, worker PPE compliance, scaffolding integrity, and dispatch immediate stop-work or rectification orders'}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center flex-wrap gap-2">
           <button
             type="button"
             onClick={() => {
@@ -156,7 +158,7 @@ export const SafetyManagement = () => {
             className="px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-2xs hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer"
           >
             <Download className="h-4 w-4 text-rose-600" />
-            <span>Export Safety Dossier (PDF)</span>
+            <span>{isRTL ? 'سیفٹی رپورٹ پی ڈی ایف' : 'Export Safety Dossier (PDF)'}</span>
           </button>
 
           <button
@@ -164,21 +166,27 @@ export const SafetyManagement = () => {
             className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-rose-600 via-orange-600 to-rose-700 hover:from-rose-700 hover:to-orange-700 text-white text-xs font-extrabold shadow-md shadow-rose-500/25 flex items-center gap-2 transition cursor-pointer"
           >
             <Plus className="h-4 w-4" />
-            <span>Log Safety Incident</span>
+            <span>{isRTL ? 'سیفٹی مسئلہ درج کریں' : 'Log Safety Incident'}</span>
           </button>
         </div>
       </div>
 
       {/* Top 4 KPI Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 min-w-0">
         <div className="bg-white rounded-3xl p-4 border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
           <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <AlertTriangle className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Open Incidents</span>
-            <span className="text-2xl font-black text-amber-700 block font-mono">{totalOpen} Active</span>
-            <span className="text-[10px] text-amber-700 font-bold">Field Action Required</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'زیر کارروائی مسائل' : 'Open Incidents'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-amber-700 block truncate">
+              <span className="font-mono ltr-isolate">{totalOpen}</span> {isRTL ? 'فعال' : 'Active'}
+            </span>
+            <span className="text-[10px] text-amber-700 font-bold block truncate">
+              {isRTL ? 'فوری کارروائی درکار' : 'Field Action Required'}
+            </span>
           </div>
         </div>
 
@@ -186,10 +194,16 @@ export const SafetyManagement = () => {
           <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <ShieldAlert className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Stop-Work Orders</span>
-            <span className="text-2xl font-black text-rose-700 block font-mono">{criticalCount} Critical</span>
-            <span className="text-[10px] text-rose-600 font-bold">Immediate Hazard Clearance</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'کام روکنے کے احکامات' : 'Stop-Work Orders'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-rose-700 block truncate">
+              <span className="font-mono ltr-isolate">{criticalCount}</span> {isRTL ? 'شدید خطرہ' : 'Critical'}
+            </span>
+            <span className="text-[10px] text-rose-600 font-bold block truncate">
+              {isRTL ? 'فوری خطرہ ختم کریں' : 'Immediate Hazard Clearance'}
+            </span>
           </div>
         </div>
 
@@ -197,10 +211,16 @@ export const SafetyManagement = () => {
           <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <CheckCircle2 className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Rectified & Closed</span>
-            <span className="text-2xl font-black text-emerald-800 block font-mono">{resolvedCount} Issues</span>
-            <span className="text-[10px] text-emerald-700 font-bold">Audit Verified by Engineers</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'حل شدہ مسائل' : 'Rectified & Closed'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-800 block truncate">
+              <span className="font-mono ltr-isolate">{resolvedCount}</span> {isRTL ? 'مسائل' : 'Issues'}
+            </span>
+            <span className="text-[10px] text-emerald-700 font-bold block truncate">
+              {isRTL ? 'انجینئرز سے تصدیق شدہ' : 'Audit Verified by Engineers'}
+            </span>
           </div>
         </div>
 
@@ -208,10 +228,16 @@ export const SafetyManagement = () => {
           <div className="h-12 w-12 rounded-2xl bg-purple-50 text-purple-700 border border-purple-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <ShieldCheck className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">HSE Safety Index</span>
-            <span className="text-2xl font-black text-purple-900 block font-mono">94.8%</span>
-            <span className="text-[10px] text-purple-700 font-bold">High Compliance Tier</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'سیفٹی انڈیکس' : 'HSE Safety Index'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-purple-900 block truncate font-mono ltr-isolate">
+              94.8%
+            </span>
+            <span className="text-[10px] text-purple-700 font-bold block truncate">
+              {isRTL ? 'اعلیٰ تعمیل کا درجہ' : 'High Compliance Tier'}
+            </span>
           </div>
         </div>
       </div>
@@ -219,28 +245,28 @@ export const SafetyManagement = () => {
       {/* Filter Toolbar */}
       <div className="bg-white p-3.5 rounded-3xl border border-slate-200/80 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="h-4 w-4 text-slate-400 absolute left-3.5 top-2.5" />
+          <Search className={`h-4 w-4 text-slate-400 absolute ${isRTL ? 'right-3.5' : 'left-3.5'} top-2.5 pointer-events-none`} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search hazard type, house ID, engineer..."
-            className="w-full pl-10 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 text-slate-800 font-medium transition"
+            placeholder={isRTL ? 'خطرے کی نوعیت، مکان نمبر یا انجینئر سے تلاش کریں...' : 'Search hazard type, house ID, engineer...'}
+            className={`w-full ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-2 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 text-slate-800 font-medium transition`}
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end overflow-x-auto pb-1 sm:pb-0">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 shrink-0">
             {[
-              { id: 'ALL', label: 'All Severities' },
-              { id: 'Critical', label: 'Critical' },
-              { id: 'High', label: 'High' },
-              { id: 'Medium', label: 'Medium' },
+              { id: 'ALL', label: isRTL ? 'تمام درجات' : 'All Severities' },
+              { id: 'Critical', label: isRTL ? 'شدید خطرہ' : 'Critical' },
+              { id: 'High', label: isRTL ? 'زیادہ خطرہ' : 'High' },
+              { id: 'Medium', label: isRTL ? 'درمیانہ' : 'Medium' },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveSeverity(tab.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap shrink-0 ${
                   activeSeverity === tab.id
                     ? 'bg-slate-900 text-white shadow-xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -253,14 +279,14 @@ export const SafetyManagement = () => {
 
           <div className="h-5 w-[1px] bg-slate-200 mx-1 hidden sm:block" />
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={() => setActiveStatus('ALL')}
               className={`px-3 py-1.5 text-xs font-bold rounded-xl transition cursor-pointer ${
                 activeStatus === 'ALL' ? 'bg-orange-50 text-orange-900 border border-orange-200 font-extrabold' : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              All
+              {isRTL ? 'تمام' : 'All'}
             </button>
             <button
               onClick={() => setActiveStatus('OPEN')}
@@ -268,7 +294,7 @@ export const SafetyManagement = () => {
                 activeStatus === 'OPEN' ? 'bg-rose-50 text-rose-900 border border-rose-200 font-extrabold' : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              Open ({totalOpen})
+              {isRTL ? 'زیر التواء' : 'Open'} (<span className="ltr-isolate">{totalOpen}</span>)
             </button>
             <button
               onClick={() => setActiveStatus('RESOLVED')}
@@ -276,7 +302,7 @@ export const SafetyManagement = () => {
                 activeStatus === 'RESOLVED' ? 'bg-emerald-50 text-emerald-900 border border-emerald-200 font-extrabold' : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              Resolved ({resolvedCount})
+              {isRTL ? 'حل شدہ' : 'Resolved'} (<span className="ltr-isolate">{resolvedCount}</span>)
             </button>
           </div>
         </div>

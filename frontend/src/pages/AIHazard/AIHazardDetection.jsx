@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 export const AIHazardDetection = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const { aiHazards, engineers, resolveAiHazard } = useDashboardData();
 
   const [selectedHazard, setSelectedHazard] = useState(null);
@@ -78,7 +78,7 @@ export const AIHazardDetection = () => {
       </div>
 
       {/* Top 4 AI Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 min-w-0">
         <div className="bg-white rounded-3xl p-4 border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
           <div className="h-12 w-12 rounded-2xl bg-purple-50 text-purple-700 border border-purple-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <Camera className="h-6 w-6" />

@@ -144,7 +144,7 @@ export const SAFETY_STATUSES = [
 ];
 
 export const HousesManagement = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const highlightId = searchParams.get('highlight');
@@ -685,10 +685,12 @@ export const HousesManagement = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
-            House Management Module
+            {isRTL ? 'مکانات کا انتظامی ماڈیول' : 'House Management Module'}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Monitor beneficiaries, construction stages, loan accounts, engineers, and quality inspection workflows
+            {isRTL
+              ? 'مستحقین، تعمیراتی مراحل، قرضہ جات کے کھاتے، انجینئرز اور کوالٹی معائنہ کا مکمل نظام'
+              : 'Monitor beneficiaries, construction stages, loan accounts, engineers, and quality inspection workflows'}
           </p>
         </div>
 
@@ -703,7 +705,7 @@ export const HousesManagement = () => {
             className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-extrabold shadow-md shadow-emerald-500/25 flex items-center gap-1.5 cursor-pointer transition transform active:scale-95"
           >
             <Plus className="h-4 w-4 stroke-[3]" />
-            <span>Add House</span>
+            <span>{isRTL ? 'نیا مکان شامل کریں' : 'Add House'}</span>
           </button>
 
           {/* Upload Excel Button */}
@@ -718,7 +720,7 @@ export const HousesManagement = () => {
             className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold shadow-md shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer transition transform active:scale-95"
           >
             <FileSpreadsheet className="h-4 w-4 stroke-[2.5]" />
-            <span>Upload Excel</span>
+            <span>{isRTL ? 'ایکسل فائل اپ لوڈ' : 'Upload Excel'}</span>
           </button>
 
           {/* Download Template Button */}
@@ -726,10 +728,10 @@ export const HousesManagement = () => {
             type="button"
             onClick={handleDownloadTemplate}
             className="px-3 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-slate-700 text-xs font-bold shadow-2xs hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer"
-            title="Download blank Excel / CSV template with standard fields"
+            title={isRTL ? 'ایکسل ٹیمپلیٹ ڈاؤن لوڈ کریں' : 'Download blank Excel / CSV template with standard fields'}
           >
             <FileDown className="h-4 w-4 text-indigo-600" />
-            <span>Template</span>
+            <span>{isRTL ? 'ٹیمپلیٹ' : 'Template'}</span>
           </button>
 
           <button
@@ -745,7 +747,7 @@ export const HousesManagement = () => {
             className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-2xs hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer"
           >
             <Download className="h-4 w-4 text-orange-600" />
-            <span>Export PDF</span>
+            <span>{isRTL ? 'پی ڈی ایف ایکسپورٹ' : 'Export PDF'}</span>
           </button>
 
           <button
@@ -761,7 +763,7 @@ export const HousesManagement = () => {
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 text-white text-xs font-extrabold shadow-md shadow-orange-500/25 flex items-center gap-1.5 cursor-pointer"
           >
             <Calendar className="h-4 w-4" />
-            <span>Schedule Field Visit</span>
+            <span>{isRTL ? 'معائناتی دورہ شیڈول کریں' : 'Schedule Field Visit'}</span>
           </button>
         </div>
       </div>
@@ -769,13 +771,13 @@ export const HousesManagement = () => {
       {/* Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-200">
         {[
-          { id: 'ALL', label: 'All Houses' },
-          { id: 'APPLICATIONS', label: 'Applications' },
-          { id: 'APPROVED', label: 'Approved' },
-          { id: 'UNDER_CONSTRUCTION', label: 'Under Construction' },
-          { id: 'REVISIT', label: 'Re-Visit Required' },
-          { id: 'COMPLETED', label: 'Completed' },
-          { id: 'REJECTED', label: 'Rejected' },
+          { id: 'ALL', label: isRTL ? 'تمام مکانات' : 'All Houses' },
+          { id: 'APPLICATIONS', label: isRTL ? 'درخواستیں' : 'Applications' },
+          { id: 'APPROVED', label: isRTL ? 'منظور شدہ' : 'Approved' },
+          { id: 'UNDER_CONSTRUCTION', label: isRTL ? 'زیر تعمیر' : 'Under Construction' },
+          { id: 'REVISIT', label: isRTL ? 'دوبارہ معائنہ مطلوب' : 'Re-Visit Required' },
+          { id: 'COMPLETED', label: isRTL ? 'مکمل شدہ' : 'Completed' },
+          { id: 'REJECTED', label: isRTL ? 'مسترد شدہ' : 'Rejected' },
         ].map((tab) => {
           const count = tabCounts[tab.id];
           const isActive = activeTab === tab.id;
@@ -791,7 +793,7 @@ export const HousesManagement = () => {
             >
               <span>{tab.label}</span>
               <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ltr-isolate ${
                   isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
                 }`}
               >
@@ -805,20 +807,20 @@ export const HousesManagement = () => {
       {/* Search & Filter Toolbar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-3xl border border-slate-200/80 shadow-2xs">
         <div className="relative w-full sm:w-80">
-          <Search className="h-4 w-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+          <Search className={`h-4 w-4 text-slate-400 absolute ${isRTL ? 'right-3.5' : 'left-3.5'} top-3 pointer-events-none`} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by ID, owner, CNIC, engineer..."
-            className="w-full pl-10 pr-9 py-2 text-xs bg-slate-50/80 border border-slate-200/90 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 text-slate-800 font-medium placeholder:text-slate-400 transition"
+            placeholder={isRTL ? 'مکان شناختی نمبر، مالک، شناختی کارڈ، انجینئر سے تلاش کریں...' : 'Search by ID, owner, CNIC, engineer...'}
+            className={`w-full ${isRTL ? 'pr-10 pl-9' : 'pl-10 pr-9'} py-2 text-xs bg-slate-50/80 border border-slate-200/90 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 text-slate-800 font-medium placeholder:text-slate-400 transition`}
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
-              title="Clear search"
+              className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition cursor-pointer`}
+              title={isRTL ? 'تلاش ختم کریں' : 'Clear search'}
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -828,14 +830,14 @@ export const HousesManagement = () => {
         <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
           <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500">
             <Filter className="h-3.5 w-3.5 text-orange-600" />
-            <span>District:</span>
+            <span>{isRTL ? 'ضلع:' : 'District:'}</span>
           </div>
           <select
             value={districtFilter}
             onChange={(e) => setDistrictFilter(e.target.value)}
             className="px-3.5 py-2 text-xs bg-slate-50/80 border border-slate-200/90 rounded-2xl text-slate-800 font-bold focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 cursor-pointer transition shadow-2xs"
           >
-            <option value="ALL">All Districts</option>
+            <option value="ALL">{isRTL ? 'تمام اضلاع' : 'All Districts'}</option>
             {districtsList.map((d) => (
               <option key={d} value={d}>
                 {d}
@@ -847,218 +849,252 @@ export const HousesManagement = () => {
 
       {/* Houses Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full min-w-0">
+          <table className="w-full text-xs min-w-[850px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase tracking-wider">
-                <th className="py-3.5 px-5">House ID</th>
-                <th className="py-3.5 px-4">Owner Info</th>
-                <th className="py-3.5 px-4">Location</th>
-                <th className="py-3.5 px-4">Assigned Engineer</th>
-                <th className="py-3.5 px-4">Stage & Progress</th>
-                <th className="py-3.5 px-4">Loan Status</th>
-                <th className="py-3.5 px-4">Safety</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-5 text-right">Actions</th>
+                <th className={`py-3.5 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'مکان نمبر' : 'House ID'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'مالک کی تفصیل' : 'Owner Info'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'مقام و پتہ' : 'Location'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'متعلقہ انجینئر' : 'Assigned Engineer'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'مرحلہ و پیش رفت' : 'Stage & Progress'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'قرضہ کی صورتحال' : 'Loan Status'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'سیفٹی' : 'Safety'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'حیثیت' : 'Status'}</th>
+                <th className={`py-3.5 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>{isRTL ? 'کارروائیاں' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredHouses.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-12 text-center text-slate-400">
-                    No houses match the selected filters.
+                    {isRTL ? 'کوئی مکان تلاش کے معیار پر پورا نہیں اترا۔' : 'No houses match the selected filters.'}
                   </td>
                 </tr>
               ) : (
-                filteredHouses.map((h) => (
-                  <tr
-                    key={h.id}
-                    className={`hover:bg-slate-50/80 transition ${
-                      highlightId === h.id ? 'bg-orange-50/60 ring-2 ring-orange-300' : ''
-                    }`}
-                  >
-                    {/* House ID */}
-                    <td className="py-4 px-5">
-                      <div className="font-mono font-black text-orange-700">{h.id}</div>
-                      <div className="text-[10px] text-slate-400">{h.plotSizeMarla} Marla • {h.coveredAreaSqft} sqft</div>
-                    </td>
+                filteredHouses.map((h) => {
+                  const stageLabelUrdu = {
+                    Foundation: 'بنیاد',
+                    Structure: 'ڈھانچہ و چنائی',
+                    Roof: 'چھت و سلیب',
+                    Electrical: 'برقی وائرنگ',
+                    Plumbing: 'پلمبنگ و سینیٹری',
+                    Finishing: 'فنشنگ و روغن',
+                    Completed: 'مکمل شدہ',
+                  }[h.stage] || h.stage;
 
-                    {/* Owner */}
-                    <td className="py-4 px-4">
-                      <div className="font-extrabold text-slate-900">{h.ownerName}</div>
-                      <div className="text-[10px] text-slate-500 font-mono">{h.ownerCnic}</div>
-                      <div className="text-[10px] text-slate-400">{h.ownerPhone}</div>
-                    </td>
+                  const statusLabelUrdu = {
+                    'Pending': 'زیر جائزہ',
+                    'Approved': 'منظور شدہ',
+                    'Under Construction': 'زیر تعمیر',
+                    'Inspection Required': 'معائنہ مطلوب',
+                    'Re-Visit': 'دوبارہ معائنہ',
+                    'Completed': 'مکمل شدہ',
+                    'On Hold': 'روکا گیا',
+                    'Rejected': 'مسترد شدہ',
+                  }[h.status] || (h.reInspectionRequired ? 'دوبارہ معائنہ' : h.status);
 
-                    {/* Location */}
-                    <td className="py-4 px-4">
-                      <div className="font-bold text-slate-800">{h.district}, {h.division}</div>
-                      <div className="text-[10px] text-slate-500 truncate max-w-[150px]">{h.tehsil}</div>
-                    </td>
+                  const loanStatusUrdu = {
+                    'Pending': 'زیر التواء',
+                    'Approved': 'منظور شدہ',
+                    'Partially Disbursed': 'جزوی ادا شدہ',
+                    'Fully Disbursed': 'مکمل ادا شدہ',
+                    'Rejected': 'مسترد',
+                    'Completed': 'مکمل',
+                  }[h.loanStatus] || h.loanStatus;
 
-                    {/* Engineer */}
-                    <td className="py-4 px-4">
-                      {h.engineerName !== 'Unassigned' ? (
-                        <div className="flex items-center gap-1.5">
-                          <HardHat className="h-3.5 w-3.5 text-orange-600 shrink-0" />
-                          <span className="font-bold text-slate-800">{h.engineerName}</span>
+                  return (
+                    <tr
+                      key={h.id}
+                      className={`hover:bg-slate-50/80 transition ${
+                        highlightId === h.id ? 'bg-orange-50/60 ring-2 ring-orange-300' : ''
+                      }`}
+                    >
+                      {/* House ID */}
+                      <td className="py-4 px-5">
+                        <div className="font-mono font-black text-orange-700 ltr-isolate">{h.id}</div>
+                        <div className="text-[10px] text-slate-400">
+                          <span className="ltr-isolate">{h.plotSizeMarla}</span> {isRTL ? 'مرلہ' : 'Marla'} • <span className="ltr-isolate">{h.coveredAreaSqft}</span> {isRTL ? 'مربع فٹ' : 'sqft'}
                         </div>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setAssignEngineerModalHouse(h);
-                            setSelectedEngineerId(engineers[0]?.id || '');
-                          }}
-                          className="px-2 py-0.5 rounded-lg bg-orange-50 text-orange-700 border border-orange-200 text-[10px] font-black hover:bg-orange-100 transition cursor-pointer"
-                        >
-                          + Assign Engineer
-                        </button>
-                      )}
-                    </td>
+                      </td>
 
-                    {/* Progress & Stage */}
-                    <td className="py-4 px-4 min-w-[130px]">
-                      <div className="flex items-center justify-between text-[11px] font-extrabold text-slate-700 mb-1">
-                        <span>{h.stage}</span>
-                        <span className="font-mono">{h.progressPct}%</span>
-                      </div>
-                      <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          style={{ width: `${h.progressPct}%` }}
-                          className={`h-full rounded-full ${
-                            h.progressPct === 100
-                              ? 'bg-emerald-600'
-                              : h.progressPct > 50
-                              ? 'bg-blue-600'
-                              : 'bg-amber-500'
-                          }`}
-                        />
-                      </div>
-                    </td>
+                      {/* Owner */}
+                      <td className="py-4 px-4">
+                        <div className="font-extrabold text-slate-900">{h.ownerName}</div>
+                        <div className="text-[10px] text-slate-500 font-mono ltr-isolate">{h.ownerCnic}</div>
+                        <div className="text-[10px] text-slate-400 ltr-isolate">{h.ownerPhone}</div>
+                      </td>
 
-                    {/* Loan Status */}
-                    <td className="py-4 px-4">
-                      <div className="font-bold text-slate-800 text-[11px]">
-                        PKR {(h.loanDisbursed / 1000).toLocaleString()}k
-                      </div>
-                      <div className="text-[10px] text-slate-500">{h.loanStatus}</div>
-                    </td>
+                      {/* Location */}
+                      <td className="py-4 px-4">
+                        <div className="font-bold text-slate-800">{h.district}</div>
+                        <div className="text-[10px] text-slate-500 truncate max-w-[150px]">{h.tehsil}</div>
+                      </td>
 
-                    {/* Safety Status */}
-                    <td className="py-4 px-4">
-                      {h.safetyStatus === 'Critical Issue' ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-200">
-                          <ShieldAlert className="h-3 w-3" /> Critical ({h.safetyIssuesCount})
-                        </span>
-                      ) : h.safetyStatus === 'Minor Issue' ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
-                          <AlertTriangle className="h-3 w-3" /> Warning
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">
-                          <CheckCircle2 className="h-3 w-3" /> Safe
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Status Badge */}
-                    <td className="py-4 px-4">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black ${
-                          h.status === 'Completed'
-                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                            : h.status === 'Under Construction'
-                            ? 'bg-blue-50 text-blue-800 border border-blue-200'
-                            : h.status === 'Re-Visit' || h.reInspectionRequired
-                            ? 'bg-purple-100 text-purple-800 border border-purple-300'
-                            : h.status === 'Approved'
-                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                            : h.status === 'Rejected'
-                            ? 'bg-rose-50 text-rose-800 border border-rose-200'
-                            : 'bg-slate-100 text-slate-700 border border-slate-200'
-                        }`}
-                      >
-                        {h.status === 'Re-Visit' ? 'Re-Visit Req.' : h.status}
-                      </span>
-                    </td>
-
-                    {/* Admin Actions */}
-                    <td className="py-4 px-5 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => setSelectedHouse(h)}
-                          className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-orange-700 hover:bg-orange-50 transition shadow-2xs cursor-pointer"
-                          title="View 360° House Details"
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                        </button>
-
-                        {(h.status === 'Rejected' || h.status === 'Re-Visit' || h.reInspectionRequired) && (
+                      {/* Engineer */}
+                      <td className="py-4 px-4">
+                        {h.engineerName !== 'Unassigned' ? (
+                          <div className="flex items-center gap-1.5">
+                            <HardHat className="h-3.5 w-3.5 text-orange-600 shrink-0" />
+                            <span className="font-bold text-slate-800">{h.engineerName}</span>
+                          </div>
+                        ) : (
                           <button
                             onClick={() => {
-                              setReVisitModalHouse(h);
-                              setReVisitForm({
-                                engineerId: h.engineerId || engineers[0]?.id || '',
-                                visitDate: new Date().toISOString().split('T')[0],
-                                visitTime: '11:00 AM',
-                                reason: h.revisitReason || 'Ghar ka re-inspection defect rectification audit',
-                              });
+                              setAssignEngineerModalHouse(h);
+                              setSelectedEngineerId(engineers[0]?.id || '');
                             }}
-                            className="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-800 border border-purple-200 hover:bg-purple-100 text-[10px] font-black transition flex items-center gap-1 cursor-pointer shadow-2xs"
-                            title="Schedule Re-Visit for this house"
+                            className="px-2 py-0.5 rounded-lg bg-orange-50 text-orange-700 border border-orange-200 text-[10px] font-black hover:bg-orange-100 transition cursor-pointer"
                           >
-                            <RotateCcw className="h-3 w-3 text-purple-700" />
-                            <span>Re-Visit</span>
+                            {isRTL ? '+ انجینئر مقرر کریں' : '+ Assign Engineer'}
                           </button>
                         )}
+                      </td>
 
-                        {h.status === 'Pending' && (
-                          <>
-                            <button
-                              onClick={() => approveHouse(h.id)}
-                              className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition shadow-2xs cursor-pointer"
-                              title="Approve Application"
-                            >
-                              <Check className="h-3.5 w-3.5" />
-                            </button>
-                            <button
-                              onClick={() => setRejectModalHouse(h)}
-                              className="p-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition shadow-2xs cursor-pointer"
-                              title="Reject Application"
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          </>
+                      {/* Progress & Stage */}
+                      <td className="py-4 px-4 min-w-[130px]">
+                        <div className="flex items-center justify-between text-[11px] font-extrabold text-slate-700 mb-1">
+                          <span>{isRTL ? stageLabelUrdu : h.stage}</span>
+                          <span className="font-mono ltr-isolate">{h.progressPct}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            style={{ width: `${h.progressPct}%` }}
+                            className={`h-full rounded-full ${
+                              h.progressPct === 100
+                                ? 'bg-emerald-600'
+                                : h.progressPct > 50
+                                ? 'bg-blue-600'
+                                : 'bg-amber-500'
+                            }`}
+                          />
+                        </div>
+                      </td>
+
+                      {/* Loan Status */}
+                      <td className="py-4 px-4">
+                        <div className="font-bold text-slate-800 text-[11px]">
+                          {isRTL ? `${(h.loanDisbursed / 1000).toLocaleString()} ہزار روپے` : `PKR ${(h.loanDisbursed / 1000).toLocaleString()}k`}
+                        </div>
+                        <div className="text-[10px] text-slate-500">{isRTL ? loanStatusUrdu : h.loanStatus}</div>
+                      </td>
+
+                      {/* Safety Status */}
+                      <td className="py-4 px-4">
+                        {h.safetyStatus === 'Critical Issue' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-200">
+                            <ShieldAlert className="h-3 w-3" /> {isRTL ? `زیادہ خطرہ (${h.safetyIssuesCount})` : `Critical (${h.safetyIssuesCount})`}
+                          </span>
+                        ) : h.safetyStatus === 'Minor Issue' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
+                            <AlertTriangle className="h-3 w-3" /> {isRTL ? 'انتباہ' : 'Warning'}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <CheckCircle2 className="h-3 w-3" /> {isRTL ? 'محفوظ' : 'Safe'}
+                          </span>
                         )}
+                      </td>
 
-                        <button
-                          onClick={() => {
-                            setAssignEngineerModalHouse(h);
-                            setSelectedEngineerId(h.engineerId || engineers[0]?.id || '');
-                          }}
-                          className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-indigo-700 hover:bg-indigo-50 transition shadow-2xs cursor-pointer"
-                          title="Assign Engineer"
+                      {/* Status Badge */}
+                      <td className="py-4 px-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                            h.status === 'Completed'
+                              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                              : h.status === 'Under Construction'
+                              ? 'bg-blue-50 text-blue-800 border border-blue-200'
+                              : h.status === 'Re-Visit' || h.reInspectionRequired
+                              ? 'bg-purple-100 text-purple-800 border border-purple-300'
+                              : h.status === 'Approved'
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                              : h.status === 'Rejected'
+                              ? 'bg-rose-50 text-rose-800 border border-rose-200'
+                              : 'bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}
                         >
-                          <UserCheck className="h-3.5 w-3.5" />
-                        </button>
+                          {isRTL ? statusLabelUrdu : (h.status === 'Re-Visit' ? 'Re-Visit Req.' : h.status)}
+                        </span>
+                      </td>
 
-                        <button
-                          onClick={() => {
-                            setScheduleModalHouse(h);
-                            setVisitScheduleForm({
-                              ...visitScheduleForm,
-                              engineerId: h.engineerId || engineers[0]?.id,
-                            });
-                          }}
-                          className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-orange-700 hover:bg-orange-50 transition shadow-2xs cursor-pointer"
-                          title="Schedule Engineer Visit"
-                        >
-                          <Calendar className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      {/* Admin Actions */}
+                      <td className={`py-4 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>
+                        <div className={`flex items-center ${isRTL ? 'justify-start' : 'justify-end'} gap-1.5`}>
+                          <button
+                            onClick={() => setSelectedHouse(h)}
+                            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-orange-700 hover:bg-orange-50 transition shadow-2xs cursor-pointer"
+                            title={isRTL ? 'مکمل تفصیلات دیکھیں' : 'View 360° House Details'}
+                          >
+                            <Eye className="h-3.5 w-3.5" />
+                          </button>
+
+                          {(h.status === 'Rejected' || h.status === 'Re-Visit' || h.reInspectionRequired) && (
+                            <button
+                              onClick={() => {
+                                setReVisitModalHouse(h);
+                                setReVisitForm({
+                                  engineerId: h.engineerId || engineers[0]?.id || '',
+                                  visitDate: new Date().toISOString().split('T')[0],
+                                  visitTime: '11:00 AM',
+                                  reason: h.revisitReason || 'Ghar ka re-inspection defect rectification audit',
+                                });
+                              }}
+                              className="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-800 border border-purple-200 hover:bg-purple-100 text-[10px] font-black transition flex items-center gap-1 cursor-pointer shadow-2xs"
+                              title={isRTL ? 'دوبارہ معائنہ شیڈول کریں' : 'Schedule Re-Visit for this house'}
+                            >
+                              <RotateCcw className="h-3 w-3 text-purple-700" />
+                              <span>{isRTL ? 'دوبارہ معائنہ' : 'Re-Visit'}</span>
+                            </button>
+                          )}
+
+                          {h.status === 'Pending' && (
+                            <>
+                              <button
+                                onClick={() => approveHouse(h.id)}
+                                className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition shadow-2xs cursor-pointer"
+                                title={isRTL ? 'درخواست منظور کریں' : 'Approve Application'}
+                              >
+                                <Check className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                onClick={() => setRejectModalHouse(h)}
+                                className="p-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition shadow-2xs cursor-pointer"
+                                title={isRTL ? 'درخواست مسترد کریں' : 'Reject Application'}
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            </>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              setAssignEngineerModalHouse(h);
+                              setSelectedEngineerId(h.engineerId || engineers[0]?.id || '');
+                            }}
+                            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-indigo-700 hover:bg-indigo-50 transition shadow-2xs cursor-pointer"
+                            title={isRTL ? 'انجینئر مقرر کریں' : 'Assign Engineer'}
+                          >
+                            <UserCheck className="h-3.5 w-3.5" />
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setScheduleModalHouse(h);
+                              setVisitScheduleForm({
+                                ...visitScheduleForm,
+                                engineerId: h.engineerId || engineers[0]?.id,
+                              });
+                            }}
+                            className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-orange-700 hover:bg-orange-50 transition shadow-2xs cursor-pointer"
+                            title={isRTL ? 'معائنہ شیڈول کریں' : 'Schedule Visit'}
+                          >
+                            <Calendar className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

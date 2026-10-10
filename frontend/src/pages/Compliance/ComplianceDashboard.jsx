@@ -139,15 +139,15 @@ export const ComplianceDashboard = () => {
             <span>Zero critical safety or environmental hazard flags active across Punjab projects.</span>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full min-w-0">
+            <table className="w-full text-xs min-w-[650px]">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 font-bold uppercase">
-                  <th className="py-3 px-4">{t('caseId')}</th>
-                  <th className="py-3 px-4">{t('applicantName')}</th>
-                  <th className="py-3 px-4">{t('location')}</th>
-                  <th className="py-3 px-4">{t('failedCriteria')}</th>
-                  <th className="py-3 px-4 text-right">{t('actions')}</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('caseId')}</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('applicantName')}</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('location')}</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('failedCriteria')}</th>
+                  <th className={`py-3 px-4 ${isRTL ? 'text-left' : 'text-right'}`}>{t('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -165,7 +165,7 @@ export const ComplianceDashboard = () => {
                         ))}
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 text-right">
+                    <td className={`py-3.5 px-4 ${isRTL ? 'text-left' : 'text-right'}`}>
                       <button
                         onClick={() => navigate(`/projects/${site.id}`)}
                         className="px-3 py-1 bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 rounded-lg text-xs font-bold"

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export const NotificationsCenter = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
   const { notifications, markNotificationRead, markAllNotificationsRead } = useDashboardData();
 
@@ -197,7 +197,7 @@ export const NotificationsCenter = () => {
                 className="p-2 rounded-xl text-slate-400 hover:text-orange-700 hover:bg-orange-100 transition shrink-0"
                 title="Go to Record"
               >
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
               </button>
             </div>
           ))

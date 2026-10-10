@@ -24,7 +24,7 @@ import {
   Menu
 } from 'lucide-react';
 
-export const Navbar = () => {
+export const Navbar = ({ mobileMenuOpen, setMobileMenuOpen }) => {
   const { user, logout, quickLogin, role } = useAuth();
   const { t, isRTL } = useLanguage();
   const {
@@ -203,24 +203,34 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200/80 bg-white px-4 md:px-7 shadow-xs">
-      {/* Left: Program Branding & Breadcrumb */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100 animate-pulse" />
-          <div>
-            <h1 className="text-xs md:text-sm font-black text-slate-900 tracking-tight leading-none">
+    <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200/80 bg-white px-2.5 sm:px-4 md:px-7 shadow-xs">
+      {/* Left: Program Branding & Breadcrumb + Mobile Toggle */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+        {/* Mobile Sidebar Hamburger Toggle */}
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen?.(!mobileMenuOpen)}
+          className="md:hidden p-1.5 sm:p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer shrink-0"
+          title="Toggle Navigation Menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-emerald-500 ring-2 sm:ring-4 ring-emerald-100 animate-pulse shrink-0" />
+          <div className="overflow-hidden min-w-0">
+            <h1 className="text-xs md:text-sm font-black text-slate-900 tracking-tight leading-none truncate max-w-[120px] xs:max-w-[170px] sm:max-w-none">
               {t('brandSubtitle')}
             </h1>
-            <span className="text-[10px] text-slate-500 font-bold hidden sm:inline-block">
-              Government of Punjab • Housing Management Portal
+            <span className="text-[10px] text-slate-500 font-bold hidden sm:inline-block truncate">
+              {isRTL ? 'حکومت پنجاب • ہاؤسنگ مینجمنٹ پورٹل' : 'Government of Punjab • Housing Management Portal'}
             </span>
           </div>
         </div>
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-2.5 md:gap-4">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 md:gap-4 shrink-0">
         {/* Global Search Bar */}
         <div className="relative hidden md:block w-72 lg:w-96" ref={searchRef}>
           <Search className={`h-4 w-4 text-slate-400 absolute ${isRTL ? 'right-3' : 'left-3'} top-2.5`} />
@@ -234,7 +244,7 @@ export const Navbar = () => {
                 navigate(`/engineers?search=${encodeURIComponent(searchQuery.trim())}`);
               }
             }}
-            placeholder="Search houses, engineers, workers, visits, loans..."
+            placeholder={isRTL ? 'مکانات، انجینئرز، ورکرز، دورے تلاش کریں...' : 'Search houses, engineers, workers, visits, loans...'}
             className={`w-full ${isRTL ? 'pr-9 pl-3 text-right' : 'pl-9 pr-8'} py-1.5 text-xs bg-slate-50 border border-slate-200/90 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 text-slate-800 transition`}
           />
           {searchQuery && (
@@ -407,20 +417,20 @@ export const Navbar = () => {
           <button
             type="button"
             onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-            className={`relative p-2 rounded-xl transition cursor-pointer ${
+            className={`relative p-1.5 sm:p-2 rounded-xl transition cursor-pointer ${
               notifDropdownOpen ? 'bg-orange-50 text-orange-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
             }`}
             title="System Alerts & Notifications"
           >
             <Bell className="h-4 w-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-600 ring-2 ring-white animate-pulse" />
+              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-rose-600 ring-2 ring-white animate-pulse" />
             )}
           </button>
 
           {/* Notification Menu */}
           {notifDropdownOpen && (
-            <div className={`absolute ${isRTL ? 'left-0' : 'right-0'} mt-2 w-80 sm:w-96 rounded-2xl bg-white p-3 shadow-2xl border border-slate-200 z-50 animate-in fade-in slide-in-from-top-2`}>
+            <div className={`absolute ${isRTL ? 'left-0 sm:left-auto sm:right-0' : 'right-0'} mt-2 w-[calc(100vw-32px)] max-w-sm sm:w-80 sm:max-w-none rounded-2xl bg-white p-3 shadow-2xl border border-slate-200 z-50 animate-in fade-in slide-in-from-top-2`}>
               <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100 px-1">
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-black text-slate-900">{t('navNotifications')}</span>
@@ -501,14 +511,18 @@ export const Navbar = () => {
           >
             <RefreshCw className={`h-3 w-3 text-slate-500 ${switching ? 'animate-spin' : ''}`} />
             <span className="text-[11px] text-slate-500">{t('switchRole')}</span>
-            <span className="font-extrabold text-orange-950">{user?.role?.split('_')[0] || 'Admin'}</span>
+            <span className="font-extrabold text-orange-950">
+              {isRTL
+                ? user?.role === 'ADMIN' ? 'سپر ایڈمن' : user?.role === 'FIELD_ENGINEER' ? 'فیلڈ انجینئر' : user?.role === 'BACKEND_REVIEW_ENGINEER' ? 'ریویو انجینئر' : 'مالک مکان'
+                : (user?.role?.split('_')[0] || 'Admin')}
+            </span>
             <ChevronDown className="h-3 w-3 text-slate-400" />
           </button>
 
           {roleDropdownOpen && (
             <div className={`absolute ${isRTL ? 'left-0' : 'right-0'} mt-2 w-64 rounded-2xl bg-white p-2 shadow-2xl border border-slate-200 z-50 animate-in fade-in slide-in-from-top-2`}>
-              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Quick Demo Logins (1-Click)
+              <div className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {isRTL ? 'فوری ڈیمو لاگ ان (1-کلک)' : 'Quick Demo Logins (1-Click)'}
               </div>
               {TEST_USERS.map((u) => (
                 <button
@@ -548,7 +562,7 @@ export const Navbar = () => {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-800 border border-rose-200/80 font-bold text-xs transition cursor-pointer shadow-2xs"
           title="Logout from session and return to Login page"
         >
-          <LogOut className="h-3.5 w-3.5" />
+          <LogOut className={`h-3.5 w-3.5 ${isRTL ? 'rotate-180' : ''}`} />
           <span className="hidden sm:inline-block">{t('logout') || 'Logout'}</span>
         </button>
       </div>
