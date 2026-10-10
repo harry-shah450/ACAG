@@ -142,7 +142,7 @@ const TILE_LAYERS = {
 };
 
 export const GISMapPage = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const targetHouseId = searchParams.get('houseId');
@@ -655,54 +655,54 @@ export const GISMapPage = () => {
       </div>
 
       {/* KPI Stats HUD Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 font-black">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 min-w-0">
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3 min-w-0">
+          <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 font-black shrink-0">
             <Building2 className="h-5 w-5" />
           </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Mapped</p>
-            <p className="text-lg font-black text-slate-900">{stats.totalMapped}</p>
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">Total Mapped</p>
+            <p className="text-lg font-black text-slate-900 font-mono">{stats.totalMapped}</p>
           </div>
         </div>
 
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 font-black">
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3 min-w-0">
+          <div className="p-2.5 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 font-black shrink-0">
             <HardHat className="h-5 w-5" />
           </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Under Construction</p>
-            <p className="text-lg font-black text-indigo-600">{stats.underConstruction}</p>
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">Under Construction</p>
+            <p className="text-lg font-black text-indigo-600 font-mono">{stats.underConstruction}</p>
           </div>
         </div>
 
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 font-black">
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3 min-w-0">
+          <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 font-black shrink-0">
             <CheckCircle2 className="h-5 w-5" />
           </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Completed</p>
-            <p className="text-lg font-black text-emerald-600">{stats.completed}</p>
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">Completed</p>
+            <p className="text-lg font-black text-emerald-600 font-mono">{stats.completed}</p>
           </div>
         </div>
 
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 font-black">
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3 min-w-0">
+          <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 font-black shrink-0">
             <ShieldAlert className="h-5 w-5" />
           </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Safety Critical</p>
-            <p className="text-lg font-black text-rose-600">{stats.criticalSafety}</p>
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">Safety Critical</p>
+            <p className="text-lg font-black text-rose-600 font-mono">{stats.criticalSafety}</p>
           </div>
         </div>
 
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3 col-span-2 sm:col-span-1">
-          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 font-black">
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3 col-span-2 sm:col-span-1 min-w-0">
+          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 font-black shrink-0">
             <RotateCcw className="h-5 w-5" />
           </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Re-Visit Required</p>
-            <p className="text-lg font-black text-amber-600">{stats.reVisitRequired}</p>
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">Re-Visit Required</p>
+            <p className="text-lg font-black text-amber-600 font-mono">{stats.reVisitRequired}</p>
           </div>
         </div>
       </div>
@@ -712,13 +712,13 @@ export const GISMapPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
           {/* 1. Search Bar */}
           <div className="relative">
-            <Search className="h-4 w-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
+            <Search className={`h-4 w-4 text-slate-400 absolute ${isRTL ? 'right-3' : 'left-3'} top-2.5 pointer-events-none`} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search House ID, Owner, CNIC..."
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 font-medium"
+              className={`w-full ${isRTL ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3'} py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 font-medium`}
             />
           </div>
 

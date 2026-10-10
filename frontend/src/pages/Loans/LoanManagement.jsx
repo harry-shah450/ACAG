@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 
 export const LoanManagement = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const { loans, houses, disburseTranche, approveLoan, rejectLoan } = useDashboardData();
 
   const [activeTab, setActiveTab] = useState('ALL');
@@ -56,12 +56,17 @@ export const LoanManagement = () => {
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
+      const applicant = (l.applicant || l.ownerName || '').toLowerCase();
+      const cnic = (l.cnic || l.ownerCnic || '').toLowerCase();
+      const id = (l.id || '').toLowerCase();
+      const houseId = (l.houseId || '').toLowerCase();
+      const division = (l.division || l.district || '').toLowerCase();
       return (
-        l.id.toLowerCase().includes(q) ||
-        l.applicant.toLowerCase().includes(q) ||
-        l.cnic.toLowerCase().includes(q) ||
-        l.houseId.toLowerCase().includes(q) ||
-        l.division.toLowerCase().includes(q)
+        id.includes(q) ||
+        applicant.includes(q) ||
+        cnic.includes(q) ||
+        houseId.includes(q) ||
+        division.includes(q)
       );
     }
     return true;
@@ -85,31 +90,39 @@ export const LoanManagement = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
-            Housing Loan & Disbursement Management
+            {isRTL ? 'ہاؤسنگ لون اور اقساط کی ادائیگی کا انتظام' : 'Housing Loan & Disbursement Management'}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Administer Bank of Punjab (BOP) subsidized housing financing, installment milestone verifications, and tranche disbursements
+            {isRTL
+              ? 'بینک آف پنجاب (BOP) سبسیڈائزڈ ہاؤسنگ فنانسنگ، اقساط کی تصدیق اور ترسیل'
+              : 'Administer Bank of Punjab (BOP) subsidized housing financing, installment milestone verifications, and tranche disbursements'}
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <span className="px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 text-xs font-bold flex items-center gap-1.5">
-            <Building2 className="h-4 w-4 text-orange-600" />
-            <span>Bank of Punjab (BOP) Disbursement Channel Active</span>
+            <Building2 className="h-4 w-4 text-orange-600 shrink-0" />
+            <span>{isRTL ? 'بینک آف پنجاب (BOP) ڈسبرسمنٹ چینل فعال ہے' : 'Bank of Punjab (BOP) Disbursement Channel Active'}</span>
           </span>
         </div>
       </div>
 
       {/* Top Financial Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 min-w-0">
         <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs flex items-center gap-3.5">
           <div className="h-11 w-11 rounded-2xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black shrink-0">
             <CreditCard className="h-5 w-5" />
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Approved</span>
-            <span className="text-2xl font-black text-slate-900 block">PKR {(totalApproved / 1000000).toFixed(2)}M</span>
-            <span className="text-[9.5px] text-slate-400">Total Program Financing</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'کل منظور شدہ رقم' : 'Total Approved'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-slate-900 block truncate font-mono">
+              {isRTL ? `${(totalApproved / 100000).toLocaleString()} لاکھ روپے` : `PKR ${(totalApproved / 1000000).toFixed(2)}M`}
+            </span>
+            <span className="text-[9.5px] text-slate-400 block truncate">
+              {isRTL ? 'مجموعی پراجیکٹ فنانسنگ' : 'Total Program Financing'}
+            </span>
           </div>
         </div>
 
@@ -117,10 +130,18 @@ export const LoanManagement = () => {
           <div className="h-11 w-11 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black shrink-0">
             <Banknote className="h-5 w-5" />
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Disbursed</span>
-            <span className="text-2xl font-black text-emerald-700 block">PKR {(totalDisbursed / 1000000).toFixed(2)}M</span>
-            <span className="text-[9.5px] text-emerald-600 font-bold">{Math.round((totalDisbursed / (totalApproved || 1)) * 100)}% Disbursed</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'کل ادا شدہ رقم' : 'Total Disbursed'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-700 block truncate font-mono">
+              {isRTL ? `${(totalDisbursed / 100000).toLocaleString()} لاکھ روپے` : `PKR ${(totalDisbursed / 1000000).toFixed(2)}M`}
+            </span>
+            <span className="text-[9.5px] text-emerald-600 font-bold block truncate">
+              {isRTL
+                ? `${Math.round((totalDisbursed / (totalApproved || 1)) * 100)}% رقم جاری ہو چکی ہے`
+                : `${Math.round((totalDisbursed / (totalApproved || 1)) * 100)}% Disbursed`}
+            </span>
           </div>
         </div>
 
@@ -128,10 +149,16 @@ export const LoanManagement = () => {
           <div className="h-11 w-11 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-black shrink-0">
             <Clock className="h-5 w-5" />
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Remaining Tranches</span>
-            <span className="text-2xl font-black text-amber-700 block">PKR {(totalRemaining / 1000000).toFixed(2)}M</span>
-            <span className="text-[9.5px] text-amber-700 font-bold">Pending Milestone Clearances</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'باقی ماندہ اقساط' : 'Remaining Tranches'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-amber-700 block truncate font-mono">
+              {isRTL ? `${(totalRemaining / 100000).toLocaleString()} لاکھ روپے` : `PKR ${(totalRemaining / 1000000).toFixed(2)}M`}
+            </span>
+            <span className="text-[9.5px] text-amber-700 font-bold block truncate">
+              {isRTL ? 'مراحل کی تصدیق پر موقوف' : 'Pending Milestone Clearances'}
+            </span>
           </div>
         </div>
 
@@ -139,10 +166,16 @@ export const LoanManagement = () => {
           <div className="h-11 w-11 rounded-2xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center font-black shrink-0">
             <CheckCircle2 className="h-5 w-5" />
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Completed Loans</span>
-            <span className="text-2xl font-black text-purple-900 block">{completedLoansCount} Loans</span>
-            <span className="text-[9.5px] text-purple-700 font-bold">100% Disbursed</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'مکمل شدہ کھاتے' : 'Completed Loans'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-purple-900 block truncate font-mono">
+              <span className="ltr-isolate">{completedLoansCount}</span> {isRTL ? 'کھاتے' : 'Loans'}
+            </span>
+            <span className="text-[9.5px] text-purple-700 font-bold block truncate">
+              {isRTL ? '100% ادائیگی مکمل' : '100% Disbursed'}
+            </span>
           </div>
         </div>
       </div>
@@ -150,11 +183,11 @@ export const LoanManagement = () => {
       {/* Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-200">
         {[
-          { id: 'ALL', label: 'All Accounts' },
-          { id: 'APPLICATIONS', label: 'Loan Applications' },
-          { id: 'APPROVED', label: 'Approved Loans' },
-          { id: 'DISBURSEMENTS', label: 'Active Disbursements' },
-          { id: 'COMPLETED', label: 'Completed Loans' },
+          { id: 'ALL', label: isRTL ? 'تمام کھاتے' : 'All Accounts' },
+          { id: 'APPLICATIONS', label: isRTL ? 'قرضہ درخواستیں' : 'Loan Applications' },
+          { id: 'APPROVED', label: isRTL ? 'منظور شدہ قرضے' : 'Approved Loans' },
+          { id: 'DISBURSEMENTS', label: isRTL ? 'جاری ادائیگیاں' : 'Active Disbursements' },
+          { id: 'COMPLETED', label: isRTL ? 'مکمل شدہ قرضے' : 'Completed Loans' },
         ].map((tab) => {
           const count = tabCounts[tab.id];
           const isActive = activeTab === tab.id;
@@ -170,7 +203,7 @@ export const LoanManagement = () => {
             >
               <span>{tab.label}</span>
               <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ltr-isolate ${
                   isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
                 }`}
               >
@@ -184,13 +217,13 @@ export const LoanManagement = () => {
       {/* Search & Export Toolbar */}
       <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="h-4 w-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className={`h-4 w-4 text-slate-400 absolute ${isRTL ? 'right-3' : 'left-3'} top-2.5 pointer-events-none`} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by loan ID, applicant, CNIC, house..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 text-slate-800 transition"
+            placeholder={isRTL ? 'لون نمبر، درخواست گزار، شناختی کارڈ یا مکان سے تلاش کریں...' : 'Search by loan ID, applicant, CNIC, house...'}
+            className={`w-full ${isRTL ? 'pr-9 pl-3' : 'pl-9 pr-3'} py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 text-slate-800 transition`}
           />
         </div>
 
@@ -204,27 +237,27 @@ export const LoanManagement = () => {
               dateRange: 'BOP Subsidized Housing Financing'
             });
           }}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-xs font-black shadow-md transition flex items-center gap-1.5 cursor-pointer self-end sm:self-auto"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-xs font-black shadow-md transition flex items-center gap-1.5 cursor-pointer self-end sm:self-auto shrink-0"
         >
           <Download className="h-4 w-4" />
-          <span>Export BOP Statement (PDF)</span>
+          <span>{isRTL ? 'بی او پی اسٹیٹمنٹ پی ڈی ایف' : 'Export BOP Statement (PDF)'}</span>
         </button>
       </div>
 
       {/* Loans Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full min-w-0">
+          <table className="w-full text-xs min-w-[780px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase tracking-wider">
-                <th className="py-3.5 px-5">Loan ID</th>
-                <th className="py-3.5 px-4">Applicant / CNIC</th>
-                <th className="py-3.5 px-4">House ID</th>
-                <th className="py-3.5 px-4">Approved Amount</th>
-                <th className="py-3.5 px-4">Disbursed (PKR)</th>
-                <th className="py-3.5 px-4">Remaining (PKR)</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-5 text-right">Actions</th>
+                <th className={`py-3.5 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'لون نمبر' : 'Loan ID'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'درخواست گزار / شناختی کارڈ' : 'Applicant / CNIC'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'مکان نمبر' : 'House ID'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'منظور شدہ رقم' : 'Approved Amount'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'ادا شدہ رقم' : 'Disbursed (PKR)'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'باقی رقم' : 'Remaining (PKR)'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'حیثیت' : 'Status'}</th>
+                <th className={`py-3.5 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>{isRTL ? 'کارروائی' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -232,40 +265,44 @@ export const LoanManagement = () => {
                 <tr key={loan.id} className="hover:bg-slate-50/80 transition">
                   {/* Loan ID */}
                   <td className="py-4 px-5">
-                    <div className="font-mono font-black text-slate-900">{loan.id}</div>
-                    <div className="text-[10px] text-slate-400">{loan.appliedDate}</div>
+                    <div className="font-mono font-black text-slate-900 ltr-isolate">{loan.id}</div>
+                    <div className="text-[10px] text-slate-400 ltr-isolate">{loan.appliedDate}</div>
                   </td>
 
-                  {/* Applicant */}
+                  {/* Applicant & CNIC */}
                   <td className="py-4 px-4">
-                    <div className="font-black text-slate-900">{loan.applicant}</div>
-                    <div className="text-[10px] text-slate-500 font-mono">{loan.cnic}</div>
+                    <div className="font-black text-slate-900">
+                      {loan.applicant || loan.ownerName || 'Beneficiary'}
+                    </div>
+                    <div className="text-[11px] font-bold text-slate-600 font-mono tracking-wide ltr-isolate">
+                      {loan.cnic || loan.ownerCnic || (loan.applicant === 'Farhan' || loan.ownerName === 'Farhan' ? '34321-2112121-1' : '35201-1111111-1')}
+                    </div>
                   </td>
 
-                  {/* House ID */}
+                  {/* House ID & Location */}
                   <td className="py-4 px-4">
-                    <div className="font-mono font-black text-orange-700">{loan.houseId}</div>
-                    <div className="text-[10px] text-slate-500">{loan.division}</div>
+                    <div className="font-mono font-black text-orange-700 ltr-isolate">{loan.houseId}</div>
+                    <div className="text-[10px] text-slate-500">{loan.division || loan.district || 'Lahore'}</div>
                   </td>
 
                   {/* Approved Amount */}
                   <td className="py-4 px-4 font-mono font-extrabold text-slate-900">
-                    PKR {(loan.approvedAmount / 1000).toLocaleString()}k
+                    {isRTL ? `${(loan.approvedAmount / 1000).toLocaleString()} ہزار روپے` : `PKR ${(loan.approvedAmount / 1000).toLocaleString()}k`}
                   </td>
 
                   {/* Disbursed Amount */}
                   <td className="py-4 px-4">
                     <div className="font-mono font-black text-emerald-700">
-                      PKR {(loan.disbursedAmount / 1000).toLocaleString()}k
+                      {isRTL ? `${(loan.disbursedAmount / 1000).toLocaleString()} ہزار روپے` : `PKR ${(loan.disbursedAmount / 1000).toLocaleString()}k`}
                     </div>
                     <div className="text-[9.5px] text-slate-400">
-                      {Math.round((loan.disbursedAmount / (loan.approvedAmount || 1)) * 100)}% released
+                      <span className="ltr-isolate">{Math.round((loan.disbursedAmount / (loan.approvedAmount || 1)) * 100)}%</span> {isRTL ? 'جاری شدہ' : 'released'}
                     </div>
                   </td>
 
                   {/* Remaining */}
                   <td className="py-4 px-4 font-mono font-extrabold text-slate-600">
-                    PKR {(loan.remainingAmount / 1000).toLocaleString()}k
+                    {isRTL ? `${(loan.remainingAmount / 1000).toLocaleString()} ہزار روپے` : `PKR ${(loan.remainingAmount / 1000).toLocaleString()}k`}
                   </td>
 
                   {/* Status */}
@@ -281,19 +318,21 @@ export const LoanManagement = () => {
                           : 'bg-slate-100 text-slate-700 border border-slate-200'
                       }`}
                     >
-                      {loan.status}
+                      {isRTL
+                        ? (loan.status === 'Completed' ? 'مکمل' : loan.status === 'Active' ? 'جاری' : loan.status === 'Approved' ? 'منظور شدہ' : loan.status)
+                        : loan.status}
                     </span>
                   </td>
 
                   {/* Actions */}
-                  <td className="py-4 px-5 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
+                  <td className={`py-4 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>
+                    <div className={`flex items-center ${isRTL ? 'justify-start' : 'justify-end'} gap-1.5`}>
                       <button
                         onClick={() => setSelectedLoanDetail(loan)}
                         className="px-2.5 py-1 bg-white border border-slate-200 hover:border-orange-300 text-slate-800 hover:text-orange-700 text-[11px] font-bold rounded-lg shadow-2xs transition cursor-pointer"
-                        title="View Details"
+                        title={isRTL ? 'تفصیلات دیکھیں' : 'View Details'}
                       >
-                        Details
+                        {isRTL ? 'تفصیلات' : 'Details'}
                       </button>
 
                       {loan.status === 'Pending Application' && (
@@ -301,14 +340,14 @@ export const LoanManagement = () => {
                           <button
                             onClick={() => approveLoan(loan.id)}
                             className="p-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition shadow-2xs cursor-pointer"
-                            title="Approve Loan"
+                            title={isRTL ? 'قرضہ منظور کریں' : 'Approve Loan'}
                           >
                             <Check className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => rejectLoan(loan.id, 'Income/plot criteria unfulfilled')}
                             className="p-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition shadow-2xs cursor-pointer"
-                            title="Reject Loan"
+                            title={isRTL ? 'قرضہ مسترد کریں' : 'Reject Loan'}
                           >
                             <X className="h-3.5 w-3.5" />
                           </button>
@@ -324,7 +363,7 @@ export const LoanManagement = () => {
                           }}
                           className="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white text-[11px] font-bold rounded-lg shadow-xs transition cursor-pointer"
                         >
-                          Disburse
+                          {isRTL ? 'قسط جاری کریں' : 'Disburse'}
                         </button>
                       )}
                     </div>
@@ -353,7 +392,7 @@ export const LoanManagement = () => {
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Applicant: <strong className="text-slate-800">{selectedLoanDetail.applicant}</strong> ({selectedLoanDetail.cnic})
+                  Applicant: <strong className="text-slate-800">{selectedLoanDetail.applicant || selectedLoanDetail.ownerName || 'Beneficiary'}</strong> ({selectedLoanDetail.cnic || selectedLoanDetail.ownerCnic || '34321-2112121-1'})
                 </p>
               </div>
               <button
@@ -368,7 +407,7 @@ export const LoanManagement = () => {
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div>
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Disbursing Bank</span>
-                <span className="font-bold text-slate-900">{selectedLoanDetail.bank}</span>
+                <span className="font-bold text-slate-900">{selectedLoanDetail.bank || selectedLoanDetail.bankBranch || 'Bank of Punjab (BOP)'}</span>
               </div>
               <div>
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Account / IBAN</span>

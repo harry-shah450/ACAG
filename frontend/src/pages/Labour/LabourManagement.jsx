@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 export const LabourManagement = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const {
     workers,
     trainingTopics,
@@ -141,18 +141,20 @@ export const LabourManagement = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
-              Labour & Workforce Safety Training
+              {isRTL ? 'لیبر اور ورکرز سیفٹی ٹریننگ' : 'Labour & Workforce Safety Training'}
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-orange-100 text-orange-800">
-              Site Artisan Registry
+              {isRTL ? 'سائٹ کاریگر رجسٹری' : 'Site Artisan Registry'}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Track site artisans, mandatory PPE skill certifications, and field training conducted during engineer visits
+            {isRTL
+              ? 'کاریگروں کے کوائف، حفاظتی اشیاء کی تصدیق اور انجینئرز کے دوروں کے دوران ٹریننگ کا ریکارڈ'
+              : 'Track site artisans, mandatory PPE skill certifications, and field training conducted during engineer visits'}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center flex-wrap gap-2">
           <button
             type="button"
             onClick={() => {
@@ -166,7 +168,7 @@ export const LabourManagement = () => {
             className="px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-2xs hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer"
           >
             <Download className="h-4 w-4 text-orange-600" />
-            <span>Export Labour Roster (PDF)</span>
+            <span>{isRTL ? 'لیبر روسٹر پی ڈی ایف' : 'Export Labour Roster (PDF)'}</span>
           </button>
 
           <button
@@ -174,21 +176,27 @@ export const LabourManagement = () => {
             className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 hover:from-orange-700 hover:to-amber-700 text-white text-xs font-extrabold shadow-md shadow-orange-500/25 flex items-center gap-2 transition cursor-pointer"
           >
             <BookOpen className="h-4 w-4" />
-            <span>Record Field Training</span>
+            <span>{isRTL ? 'ٹریننگ ریکارڈ درج کریں' : 'Record Field Training'}</span>
           </button>
         </div>
       </div>
 
       {/* Top 4 KPI Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 min-w-0">
         <div className="bg-white rounded-3xl p-4 border border-slate-200/80 shadow-2xs flex items-center gap-3.5">
           <div className="h-12 w-12 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <Users className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Total Artisans</span>
-            <span className="text-2xl font-black text-slate-900 block font-mono">{totalWorkers} Workers</span>
-            <span className="text-[10px] text-blue-700 font-bold">6 Skill Trades Active</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'کل کاریگر و مزدور' : 'Total Artisans'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-slate-900 block truncate">
+              <span className="font-mono ltr-isolate">{totalWorkers}</span> {isRTL ? 'افراد' : 'Workers'}
+            </span>
+            <span className="text-[10px] text-blue-700 font-bold block truncate">
+              {isRTL ? '6 شعبوں کے ماہرین' : '6 Skill Trades Active'}
+            </span>
           </div>
         </div>
 
@@ -196,10 +204,16 @@ export const LabourManagement = () => {
           <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <CheckCircle2 className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Safety Certified</span>
-            <span className="text-2xl font-black text-emerald-800 block font-mono">{trainedWorkers} Trained</span>
-            <span className="text-[10px] text-emerald-700 font-bold">100% PPE Qualified</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'سیفٹی تصدیق شدہ' : 'Safety Certified'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-800 block truncate">
+              <span className="font-mono ltr-isolate">{trainedWorkers}</span> {isRTL ? 'تربیت یافتہ' : 'Trained'}
+            </span>
+            <span className="text-[10px] text-emerald-700 font-bold block truncate">
+              {isRTL ? '100% حفاظتی کٹ اہل' : '100% PPE Qualified'}
+            </span>
           </div>
         </div>
 
@@ -207,10 +221,16 @@ export const LabourManagement = () => {
           <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <Clock className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Training Due</span>
-            <span className="text-2xl font-black text-amber-700 block font-mono">{pendingTrainingWorkers} Pending</span>
-            <span className="text-[10px] text-amber-700 font-bold">Scheduled Next Visit</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'ٹریننگ مطلوب' : 'Training Due'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-amber-700 block truncate">
+              <span className="font-mono ltr-isolate">{pendingTrainingWorkers}</span> {isRTL ? 'زیر التواء' : 'Pending'}
+            </span>
+            <span className="text-[10px] text-amber-700 font-bold block truncate">
+              {isRTL ? 'اگلے دورے پر شیڈول' : 'Scheduled Next Visit'}
+            </span>
           </div>
         </div>
 
@@ -218,10 +238,16 @@ export const LabourManagement = () => {
           <div className="h-12 w-12 rounded-2xl bg-purple-50 text-purple-700 border border-purple-100 flex items-center justify-center font-black shrink-0 shadow-xs">
             <GraduationCap className="h-6 w-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Sessions Logged</span>
-            <span className="text-2xl font-black text-purple-900 block font-mono">{totalTrainingSessions} Sessions</span>
-            <span className="text-[10px] text-purple-700 font-bold">Engineer Verified</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">
+              {isRTL ? 'مکمل سیشنز' : 'Sessions Logged'}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-purple-900 block truncate">
+              <span className="font-mono ltr-isolate">{totalTrainingSessions}</span> {isRTL ? 'سیشنز' : 'Sessions'}
+            </span>
+            <span className="text-[10px] text-purple-700 font-bold block truncate">
+              {isRTL ? 'انجینئر سے تصدیق شدہ' : 'Engineer Verified'}
+            </span>
           </div>
         </div>
       </div>
@@ -229,9 +255,9 @@ export const LabourManagement = () => {
       {/* Main Tabs Navigation */}
       <div className="flex items-center gap-2 border-b border-slate-200 pb-1 overflow-x-auto">
         {[
-          { id: 'WORKERS', label: 'Registered Artisans', icon: Users },
-          { id: 'TOPICS', label: 'Safety Curriculum Catalog', icon: BookOpen },
-          { id: 'HISTORY', label: 'Skill Qualification Matrix', icon: FileCheck },
+          { id: 'WORKERS', label: isRTL ? 'اندراج شدہ کاریگر' : 'Registered Artisans', icon: Users },
+          { id: 'TOPICS', label: isRTL ? 'سیفٹی نصاب کی فہرست' : 'Safety Curriculum Catalog', icon: BookOpen },
+          { id: 'HISTORY', label: isRTL ? 'مہارت و ٹریننگ ریکارڈ' : 'Skill Qualification Matrix', icon: FileCheck },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -261,20 +287,20 @@ export const LabourManagement = () => {
           <div className="bg-white p-3.5 rounded-3xl border border-slate-200/80 shadow-2xs space-y-3 lg:space-y-0 lg:flex lg:items-center lg:justify-between lg:gap-4">
             {/* Left: Search Input */}
             <div className="relative w-full lg:w-72 xl:w-80 shrink-0">
-              <Search className="h-4 w-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+              <Search className={`h-4 w-4 text-slate-400 absolute ${isRTL ? 'right-3.5' : 'left-3.5'} top-3 pointer-events-none`} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search worker by name, skill, house..."
-                className="w-full pl-10 pr-9 py-2 text-xs bg-slate-50/80 border border-slate-200/90 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 text-slate-800 font-medium placeholder:text-slate-400 transition"
+                placeholder={isRTL ? 'کاریگر کا نام، مہارت یا مکان سے تلاش کریں...' : 'Search worker by name, skill, house...'}
+                className={`w-full ${isRTL ? 'pr-10 pl-9' : 'pl-10 pr-9'} py-2 text-xs bg-slate-50/80 border border-slate-200/90 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 text-slate-800 font-medium placeholder:text-slate-400 transition`}
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
-                  title="Clear search"
+                  className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition cursor-pointer`}
+                  title={isRTL ? 'تلاش ختم کریں' : 'Clear search'}
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -286,6 +312,15 @@ export const LabourManagement = () => {
               <div className="flex items-center gap-1.5 shrink-0">
                 {['ALL', ...skillsList].map((s) => {
                   const isActive = skillFilter === s;
+                  const skillUrduMap = {
+                    ALL: 'تمام شعبے',
+                    Mason: 'راج مزدور / چنائی',
+                    Electrician: 'الیکٹریشن',
+                    Plumber: 'پلمبر',
+                    Carpenter: 'کارپینٹر / بڑھئی',
+                    Welder: 'ویلڈر',
+                    Painter: 'پینٹر / رنگ ساز',
+                  };
                   return (
                     <button
                       key={s}
@@ -296,7 +331,7 @@ export const LabourManagement = () => {
                           : 'bg-slate-100/80 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
                       }`}
                     >
-                      {s === 'ALL' ? 'All Trades' : s}
+                      {isRTL ? skillUrduMap[s] || s : (s === 'ALL' ? 'All Trades' : s)}
                     </button>
                   );
                 })}
@@ -311,7 +346,7 @@ export const LabourManagement = () => {
                   className={`p-1.5 rounded-xl transition cursor-pointer ${
                     viewMode === 'GRID' ? 'bg-white text-orange-700 shadow-xs font-bold' : 'text-slate-500 hover:text-slate-800'
                   }`}
-                  title="Card Grid View"
+                  title={isRTL ? 'کارڈز ویو' : 'Card Grid View'}
                 >
                   <LayoutGrid className="h-4 w-4" />
                 </button>
@@ -320,7 +355,7 @@ export const LabourManagement = () => {
                   className={`p-1.5 rounded-xl transition cursor-pointer ${
                     viewMode === 'TABLE' ? 'bg-white text-orange-700 shadow-xs font-bold' : 'text-slate-500 hover:text-slate-800'
                   }`}
-                  title="Table View"
+                  title={isRTL ? 'ٹیبل ویو' : 'Table View'}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -331,127 +366,161 @@ export const LabourManagement = () => {
           {/* VIEW 1: ARTISAN CARDS */}
           {viewMode === 'GRID' && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              {filteredWorkers.map((w) => (
-                <div
-                  key={w.id}
-                  className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-orange-200 transition duration-200 flex flex-col justify-between space-y-4"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
-                          {w.name[0]}
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-black text-slate-900 leading-tight">{w.name}</h3>
-                          <span className="text-[11px] text-slate-400 font-mono">{w.id}</span>
-                        </div>
-                      </div>
+              {filteredWorkers.map((w) => {
+                const skillUrdu = {
+                  Mason: 'راج مزدور',
+                  Electrician: 'الیکٹریشن',
+                  Plumber: 'پلمبر',
+                  Carpenter: 'کارپینٹر',
+                  Welder: 'ویلڈر',
+                  Painter: 'پینٹر',
+                }[w.skill] || w.skill;
 
-                      <span className={`px-2.5 py-1 rounded-xl text-[10px] font-black border uppercase tracking-wider shrink-0 ${getSkillColor(w.skill)}`}>
-                        {w.skill}
-                      </span>
-                    </div>
+                return (
+                  <div
+                    key={w.id}
+                    className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-orange-200 transition duration-200 flex flex-col justify-between space-y-4"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white flex items-center justify-center font-black text-sm shadow-xs shrink-0">
+                            {w.name[0]}
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-black text-slate-900 leading-tight">{w.name}</h3>
+                            <span className="text-[11px] text-slate-400 font-mono ltr-isolate">{w.id}</span>
+                          </div>
+                        </div>
 
-                    {/* House Assignment & Phone */}
-                    <div className="mt-3.5 pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="h-3.5 w-3.5 text-orange-600 shrink-0" />
-                        <span className="font-bold text-slate-800 truncate">
-                          {w.assignedHouseId} ({w.assignedHouseOwner})
+                        <span className={`px-2.5 py-1 rounded-xl text-[10px] font-black border uppercase tracking-wider shrink-0 ${getSkillColor(w.skill)}`}>
+                          {isRTL ? skillUrdu : w.skill}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-                        <span className="font-mono">{w.phone}</span>
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold ${
-                            w.trainingStatus === 'Trained'
-                              ? 'bg-emerald-50 text-emerald-800'
-                              : 'bg-amber-50 text-amber-800'
-                          }`}
-                        >
-                          {w.trainingStatus === 'Trained' ? <Check className="h-3 w-3 text-emerald-600" /> : <Clock className="h-3 w-3 text-amber-600" />}
-                          <span>{w.trainingStatus}</span>
-                        </span>
+
+                      {/* House Assignment & Phone */}
+                      <div className="mt-3.5 pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5 text-orange-600 shrink-0" />
+                          <span className="font-bold text-slate-800 truncate">
+                            <span className="font-mono ltr-isolate">{w.assignedHouseId}</span> ({w.assignedHouseOwner})
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                          <span className="font-mono ltr-isolate">{w.phone}</span>
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold ${
+                              w.trainingStatus === 'Trained'
+                                ? 'bg-emerald-50 text-emerald-800'
+                                : 'bg-amber-50 text-amber-800'
+                            }`}
+                          >
+                            {w.trainingStatus === 'Trained' ? <Check className="h-3 w-3 text-emerald-600" /> : <Clock className="h-3 w-3 text-amber-600" />}
+                            <span>{isRTL ? (w.trainingStatus === 'Trained' ? 'تربیت یافتہ' : 'غیر تربیت یافتہ') : w.trainingStatus}</span>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Actions */}
-                  <div className="pt-3 border-t border-slate-100">
-                    <button
-                      onClick={() => setSelectedWorkerHistory(w)}
-                      className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                      <span>View Training Transcript</span>
-                    </button>
+                    {/* Actions */}
+                    <div className="pt-3 border-t border-slate-100">
+                      <button
+                        onClick={() => setSelectedWorkerHistory(w)}
+                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        <span>{isRTL ? 'ٹریننگ ٹرانسکرپٹ دیکھیں' : 'View Training Transcript'}</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
           {/* VIEW 2: COMPACT TABLE */}
           {viewMode === 'TABLE' && (
             <div className="bg-white rounded-3xl border border-slate-200/80 shadow-2xs overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full min-w-0">
+                <table className="w-full text-xs min-w-[700px]">
                   <thead>
                     <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase tracking-wider">
-                      <th className="py-4 px-5 whitespace-nowrap">Artisan ID & Name</th>
-                      <th className="py-4 px-4 whitespace-nowrap">Skill Trade</th>
-                      <th className="py-4 px-4 whitespace-nowrap">Assigned Site</th>
-                      <th className="py-4 px-4 whitespace-nowrap">Training Status</th>
-                      <th className="py-4 px-4 whitespace-nowrap">Safety Score</th>
-                      <th className="py-4 px-5 text-right whitespace-nowrap">Action</th>
+                      <th className={`py-4 px-5 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>
+                        {isRTL ? 'کاریگر کی شناخت و نام' : 'Artisan ID & Name'}
+                      </th>
+                      <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>
+                        {isRTL ? 'شعبہ و مہارت' : 'Skill Trade'}
+                      </th>
+                      <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>
+                        {isRTL ? 'متعلقہ سائٹ' : 'Assigned Site'}
+                      </th>
+                      <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>
+                        {isRTL ? 'ٹریننگ کی صورتحال' : 'Training Status'}
+                      </th>
+                      <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>
+                        {isRTL ? 'سیفٹی اسکور' : 'Safety Score'}
+                      </th>
+                      <th className={`py-4 px-5 whitespace-nowrap ${isRTL ? 'text-left' : 'text-right'}`}>
+                        {isRTL ? 'کارروائی' : 'Action'}
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {filteredWorkers.map((w) => (
-                      <tr key={w.id} className="hover:bg-slate-50/80 transition">
-                        <td className="py-4 px-5 whitespace-nowrap">
-                          <div className="font-black text-slate-900 text-sm">{w.name}</div>
-                          <div className="text-[11px] text-slate-400 font-mono">{w.id} • {w.phone}</div>
-                        </td>
+                    {filteredWorkers.map((w) => {
+                      const skillUrdu = {
+                        Mason: 'راج مزدور',
+                        Electrician: 'الیکٹریشن',
+                        Plumber: 'پلمبر',
+                        Carpenter: 'کارپینٹر',
+                        Welder: 'ویلڈر',
+                        Painter: 'پینٹر',
+                      }[w.skill] || w.skill;
 
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xl text-[10px] font-black border ${getSkillColor(w.skill)}`}>
-                            {w.skill}
-                          </span>
-                        </td>
+                      return (
+                        <tr key={w.id} className="hover:bg-slate-50/80 transition">
+                          <td className="py-4 px-5 whitespace-nowrap">
+                            <div className="font-black text-slate-900 text-sm">{w.name}</div>
+                            <div className="text-[11px] text-slate-400 font-mono ltr-isolate">{w.id} • {w.phone}</div>
+                          </td>
 
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          <div className="font-bold text-orange-700 font-mono">{w.assignedHouseId}</div>
-                          <div className="text-[11px] text-slate-500">{w.assignedHouseOwner}</div>
-                        </td>
+                          <td className="py-4 px-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xl text-[10px] font-black border ${getSkillColor(w.skill)}`}>
+                              {isRTL ? skillUrdu : w.skill}
+                            </span>
+                          </td>
 
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
-                              w.trainingStatus === 'Trained'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                                : 'bg-amber-50 text-amber-800 border-amber-200'
-                            }`}
-                          >
-                            {w.trainingStatus}
-                          </span>
-                        </td>
+                          <td className="py-4 px-4 whitespace-nowrap">
+                            <div className="font-bold text-orange-700 font-mono ltr-isolate">{w.assignedHouseId}</div>
+                            <div className="text-[11px] text-slate-500">{w.assignedHouseOwner}</div>
+                          </td>
 
-                        <td className="py-4 px-4 whitespace-nowrap font-bold text-emerald-700">
-                          {w.safetyStatus === 'Safe' ? '100% Compliant' : 'Warning'}
-                        </td>
+                          <td className="py-4 px-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
+                                w.trainingStatus === 'Trained'
+                                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                  : 'bg-amber-50 text-amber-800 border-amber-200'
+                              }`}
+                            >
+                              {isRTL ? (w.trainingStatus === 'Trained' ? 'تربیت یافتہ' : 'غیر تربیت یافتہ') : w.trainingStatus}
+                            </span>
+                          </td>
 
-                        <td className="py-4 px-5 text-right whitespace-nowrap">
-                          <button
-                            onClick={() => setSelectedWorkerHistory(w)}
-                            className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-2xs transition cursor-pointer"
-                          >
-                            Transcript
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                          <td className="py-4 px-4 whitespace-nowrap font-bold text-emerald-700">
+                            {w.safetyStatus === 'Safe' ? (isRTL ? '100% محفوظ' : '100% Compliant') : (isRTL ? 'انتباہ' : 'Warning')}
+                          </td>
+
+                          <td className={`py-4 px-5 whitespace-nowrap ${isRTL ? 'text-left' : 'text-right'}`}>
+                            <button
+                              onClick={() => setSelectedWorkerHistory(w)}
+                              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-2xs transition cursor-pointer"
+                            >
+                              {isRTL ? 'ٹرانسکرپٹ' : 'Transcript'}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -465,17 +534,21 @@ export const LabourManagement = () => {
          ========================================================================= */}
       {activeTab === 'TOPICS' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h2 className="text-sm font-black text-slate-900">Standard Safety Curriculum Modules</h2>
-              <p className="text-xs text-slate-500">Certified by Government HSE Directorate</p>
+              <h2 className="text-sm font-black text-slate-900">
+                {isRTL ? 'سیفٹی نصاب کے معیاری ماڈیولز' : 'Standard Safety Curriculum Modules'}
+              </h2>
+              <p className="text-xs text-slate-500">
+                {isRTL ? 'محکمہ لیبر و ایچ ایس ای ڈائریکٹوریٹ سے منظور شدہ' : 'Certified by Government HSE Directorate'}
+              </p>
             </div>
             <button
               onClick={() => setIsAddTopicModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+              className="self-start sm:self-auto px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-sm shrink-0"
             >
               <Plus className="h-3.5 w-3.5" />
-              <span>Add Curriculum Topic</span>
+              <span>{isRTL ? 'نیا ماڈیول شامل کریں' : 'Add Curriculum Topic'}</span>
             </button>
           </div>
 
@@ -484,7 +557,7 @@ export const LabourManagement = () => {
               <div key={topic.id} className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-2xs flex flex-col justify-between hover:shadow-md transition">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono text-[10px] font-black text-orange-700 bg-orange-50 px-2.5 py-0.5 rounded-md border border-orange-200">
+                    <span className="font-mono text-[10px] font-black text-orange-700 bg-orange-50 px-2.5 py-0.5 rounded-md border border-orange-200 ltr-isolate">
                       {topic.id}
                     </span>
                     <span
@@ -492,7 +565,7 @@ export const LabourManagement = () => {
                         topic.required ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-600'
                       }`}
                     >
-                      {topic.required ? 'Mandatory' : 'Optional'}
+                      {topic.required ? (isRTL ? 'لازمی ماڈیول' : 'Mandatory') : (isRTL ? 'اختیاری' : 'Optional')}
                     </span>
                   </div>
 
@@ -501,8 +574,13 @@ export const LabourManagement = () => {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold">
-                  <span className="text-slate-400">Duration: <strong className="text-slate-800">{topic.duration}</strong></span>
-                  <span className="text-purple-700 font-extrabold">{topic.trainedCount} Trained</span>
+                  <span className="text-slate-400">
+                    {isRTL ? 'دورانیہ: ' : 'Duration: '}
+                    <strong className="text-slate-800 ltr-isolate">{topic.duration}</strong>
+                  </span>
+                  <span className="text-purple-700 font-extrabold">
+                    <span className="ltr-isolate">{topic.trainedCount}</span> {isRTL ? 'تربیت یافتہ' : 'Trained'}
+                  </span>
                 </div>
               </div>
             ))}
@@ -517,8 +595,12 @@ export const LabourManagement = () => {
         <div className="space-y-4">
           <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-2xs space-y-4">
             <div>
-              <h2 className="text-sm font-black text-slate-900">Worker Safety Qualification Matrix</h2>
-              <p className="text-xs text-slate-500">Live qualification transcript of each artisan across mandatory safety modules</p>
+              <h2 className="text-sm font-black text-slate-900">
+                {isRTL ? 'کاریگروں کا سیفٹی کوالیفیکیشن میٹرکس' : 'Worker Safety Qualification Matrix'}
+              </h2>
+              <p className="text-xs text-slate-500">
+                {isRTL ? 'ہر کاریگر کا لازمی سیفٹی ماڈیولز کی تکمیل کا مکمل ٹرانسکرپٹ' : 'Live qualification transcript of each artisan across mandatory safety modules'}
+              </p>
             </div>
 
             <div className="space-y-3">
@@ -526,23 +608,27 @@ export const LabourManagement = () => {
                 <div key={worker.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="h-9 w-9 rounded-2xl bg-orange-600 text-white flex items-center justify-center font-black text-xs">
+                      <div className="h-9 w-9 rounded-2xl bg-orange-600 text-white flex items-center justify-center font-black text-xs shrink-0">
                         {worker.name[0]}
                       </div>
                       <div>
-                        <div className="text-xs font-black text-slate-900">{worker.name} ({worker.id})</div>
-                        <div className="text-[11px] text-slate-500">{worker.skill} • Assigned to {worker.assignedHouseId} ({worker.assignedHouseOwner})</div>
+                        <div className="text-xs font-black text-slate-900">
+                          {worker.name} (<span className="font-mono ltr-isolate">{worker.id}</span>)
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          {worker.skill} • {isRTL ? 'متعلقہ مکان:' : 'Assigned to'} <span className="font-mono ltr-isolate">{worker.assignedHouseId}</span> ({worker.assignedHouseOwner})
+                        </div>
                       </div>
                     </div>
 
                     <span
-                      className={`px-3 py-1 rounded-xl text-[10px] font-black ${
+                      className={`px-3 py-1 rounded-xl text-[10px] font-black shrink-0 ${
                         worker.trainingStatus === 'Trained'
                           ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                           : 'bg-amber-100 text-amber-800 border border-amber-200'
                       }`}
                     >
-                      {worker.trainingStatus} ({worker.completedTopics.length} / {worker.completedTopics.length + worker.pendingTopics.length} Modules)
+                      {isRTL ? (worker.trainingStatus === 'Trained' ? 'تربیت یافتہ' : 'غیر تربیت یافتہ') : worker.trainingStatus} (<span className="ltr-isolate">{worker.completedTopics.length} / {worker.completedTopics.length + worker.pendingTopics.length}</span> {isRTL ? 'ماڈیولز' : 'Modules'})
                     </span>
                   </div>
 
@@ -550,14 +636,14 @@ export const LabourManagement = () => {
                   <div className="flex flex-wrap gap-2 pt-1">
                     {worker.completedTopics.map((topic, i) => (
                       <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        <Check className="h-3 w-3 text-emerald-600" />
-                        <span>{topic} — Certified</span>
+                        <Check className="h-3 w-3 text-emerald-600 shrink-0" />
+                        <span>{topic} — {isRTL ? 'تصدیق شدہ' : 'Certified'}</span>
                       </span>
                     ))}
                     {worker.pendingTopics.map((topic, i) => (
                       <span key={i} className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                        <Clock className="h-3 w-3 text-amber-600" />
-                        <span>{topic} — Pending</span>
+                        <Clock className="h-3 w-3 text-amber-600 shrink-0" />
+                        <span>{topic} — {isRTL ? 'زیر التواء' : 'Pending'}</span>
                       </span>
                     ))}
                   </div>

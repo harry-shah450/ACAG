@@ -152,16 +152,16 @@ export const HandoverDashboard = () => {
         {loading ? (
           <Spinner message="Loading handover status..." className="h-64" />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full min-w-0">
+            <table className="w-full text-xs min-w-[700px]">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 font-extrabold uppercase">
-                  <th className="py-3.5 px-6">{t('caseId')}</th>
-                  <th className="py-3.5 px-4">{t('applicantName')}</th>
-                  <th className="py-3.5 px-4">{t('utilitiesChecklist')}</th>
-                  <th className="py-3.5 px-4">{t('dualSignatures')}</th>
-                  <th className="py-3.5 px-4">{t('status')}</th>
-                  <th className="py-3.5 px-6 text-right">{t('actions')}</th>
+                  <th className={`py-3.5 px-6 ${isRTL ? 'text-right' : 'text-left'}`}>{t('caseId')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('applicantName')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('utilitiesChecklist')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('dualSignatures')}</th>
+                  <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('status')}</th>
+                  <th className={`py-3.5 px-6 ${isRTL ? 'text-left' : 'text-right'}`}>{t('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -207,7 +207,7 @@ export const HandoverDashboard = () => {
                           {h.handover_completed ? 'Handed Over' : 'In Progress'}
                         </Badge>
                       </td>
-                      <td className="py-4 px-6 text-right space-x-2">
+                      <td className={`py-4 px-6 ${isRTL ? 'text-left' : 'text-right'} space-x-2`}>
                         <button
                           onClick={() => handleOpenManage(h)}
                           className="px-3 py-1.5 rounded-xl border border-slate-200 font-bold text-xs text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer"

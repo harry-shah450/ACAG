@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 
 export const EngineerVisits = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const [searchParams] = useSearchParams();
   const highlightVisitId = searchParams.get('visitId');
   const initialFilter = searchParams.get('filter') || 'ALL';
@@ -137,14 +137,16 @@ export const EngineerVisits = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
-            Engineer Visits & Field Inspections
+            {isRTL ? 'فیلڈ معائنہ اور انجینئر دورے' : 'Engineer Visits & Field Inspections'}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Schedule engineer visits, verify stage completion, inspect worker safety, and review AI hazard audits
+            {isRTL
+              ? 'انجینئرز کے دورے شیڈول کریں، مراحل کی تصدیق، سیفٹی آڈٹ اور اے آئی خطرات کا جائزہ لیں'
+              : 'Schedule engineer visits, verify stage completion, inspect worker safety, and review AI hazard audits'}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center flex-wrap gap-2">
           <button
             type="button"
             onClick={() => {
@@ -159,7 +161,7 @@ export const EngineerVisits = () => {
             className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-2xs hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer"
           >
             <Download className="h-4 w-4 text-orange-600" />
-            <span>Export Visits Log (PDF)</span>
+            <span>{isRTL ? 'پی ڈی ایف ایکسپورٹ' : 'Export Visits Log (PDF)'}</span>
           </button>
 
           <button
@@ -167,7 +169,7 @@ export const EngineerVisits = () => {
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 hover:from-orange-700 hover:to-amber-700 text-white text-xs font-extrabold shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition cursor-pointer"
           >
             <Plus className="h-4 w-4" />
-            <span>Schedule New Visit</span>
+            <span>{isRTL ? 'نیا دورہ شیڈول کریں' : 'Schedule New Visit'}</span>
           </button>
         </div>
       </div>
@@ -175,11 +177,11 @@ export const EngineerVisits = () => {
       {/* Filter Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-200">
         {[
-          { id: 'ALL', label: 'All Visits', count: visits.length },
-          { id: 'SCHEDULED', label: 'Upcoming Scheduled', count: visits.filter((v) => v.status === 'Scheduled').length },
-          { id: 'COMPLETED', label: 'Completed Visits', count: visits.filter((v) => v.status === 'Completed').length },
-          { id: 'PENDING_APPROVAL', label: 'Pending Admin Approval', count: visits.filter((v) => v.status === 'Completed' && !v.adminApproved).length },
-          { id: 'RE_INSPECTION', label: 'Re-Inspection Required', count: visits.filter((v) => v.reInspectionRequired).length },
+          { id: 'ALL', label: isRTL ? 'تمام دورے' : 'All Visits', count: visits.length },
+          { id: 'SCHEDULED', label: isRTL ? 'شیڈول شدہ دورے' : 'Upcoming Scheduled', count: visits.filter((v) => v.status === 'Scheduled').length },
+          { id: 'COMPLETED', label: isRTL ? 'مکمل شدہ دورے' : 'Completed Visits', count: visits.filter((v) => v.status === 'Completed').length },
+          { id: 'PENDING_APPROVAL', label: isRTL ? 'زیر جائزہ دورے' : 'Pending Admin Approval', count: visits.filter((v) => v.status === 'Completed' && !v.adminApproved).length },
+          { id: 'RE_INSPECTION', label: isRTL ? 'دوبارہ معائنہ مطلوب' : 'Re-Inspection Required', count: visits.filter((v) => v.reInspectionRequired).length },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -192,7 +194,7 @@ export const EngineerVisits = () => {
           >
             <span>{tab.label}</span>
             <span
-              className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ltr-isolate ${
                 activeFilter === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
               }`}
             >
@@ -205,20 +207,20 @@ export const EngineerVisits = () => {
       {/* Search Toolbar */}
       <div className="bg-white p-3.5 rounded-3xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="h-4 w-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+          <Search className={`h-4 w-4 text-slate-400 absolute ${isRTL ? 'right-3.5' : 'left-3.5'} top-3 pointer-events-none`} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by visit ID, house, engineer, type..."
-            className="w-full pl-10 pr-9 py-2 text-xs bg-slate-50/80 border border-slate-200/90 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 text-slate-800 font-medium placeholder:text-slate-400 transition"
+            placeholder={isRTL ? 'دورہ نمبر، مکان، انجینئر یا نوعیت سے تلاش کریں...' : 'Search by visit ID, house, engineer, type...'}
+            className={`w-full ${isRTL ? 'pr-10 pl-9' : 'pl-10 pr-9'} py-2 text-xs bg-slate-50/80 border border-slate-200/90 rounded-2xl focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 text-slate-800 font-medium placeholder:text-slate-400 transition`}
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
-              title="Clear search"
+              className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-lg hover:bg-slate-100 transition cursor-pointer`}
+              title={isRTL ? 'تلاش ختم کریں' : 'Clear search'}
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -228,123 +230,141 @@ export const EngineerVisits = () => {
 
       {/* Visits Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full min-w-0">
+          <table className="w-full text-xs min-w-[780px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase tracking-wider">
-                <th className="py-3.5 px-5">Visit ID</th>
-                <th className="py-3.5 px-4">House & Address</th>
-                <th className="py-3.5 px-4">Engineer</th>
-                <th className="py-3.5 px-4">Visit Type</th>
-                <th className="py-3.5 px-4">Date & Time</th>
-                <th className="py-3.5 px-4">Status & Quality</th>
-                <th className="py-3.5 px-4">AI Vision Hazard</th>
-                <th className="py-3.5 px-5 text-right">Actions</th>
+                <th className={`py-3.5 px-5 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'دورہ نمبر' : 'Visit ID'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'مکان و پتہ' : 'House & Address'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'انجینئر' : 'Engineer'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'دورے کی نوعیت' : 'Visit Type'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'تاریخ و وقت' : 'Date & Time'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'حیثیت و جائزہ' : 'Status & Quality'}</th>
+                <th className={`py-3.5 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>{isRTL ? 'اے آئی خطرات کی جانچ' : 'AI Vision Hazard'}</th>
+                <th className={`py-3.5 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>{isRTL ? 'کارروائیاں' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredVisits.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-400">
-                    No engineer visits match the selected filter.
+                    {isRTL ? 'کوئی معائناتی دورہ تلاش کے معیار پر پورا نہیں اترا۔' : 'No engineer visits match the selected filter.'}
                   </td>
                 </tr>
               ) : (
-                filteredVisits.map((v) => (
-                  <tr key={v.id} className="hover:bg-slate-50/80 transition">
-                    {/* Visit ID */}
-                    <td className="py-4 px-5">
-                      <div className="font-mono font-black text-slate-900">{v.id}</div>
-                      <div className="text-[10px] text-slate-400">{v.purpose}</div>
-                    </td>
+                filteredVisits.map((v) => {
+                  const visitTypeUrdu = {
+                    'Safety Inspection': 'سیفٹی معائنہ',
+                    'Labour Training': 'لیبر ٹریننگ',
+                    'Final Inspection': 'حتمی معائنہ',
+                    'Construction Inspection': 'تعمیراتی معائنہ',
+                    'Progress Verification': 'پیش رفت کی تصدیق',
+                  }[v.visitType] || v.visitType;
 
-                    {/* House */}
-                    <td className="py-4 px-4">
-                      <div className="font-mono font-black text-orange-700">{v.houseId}</div>
-                      <div className="text-[10px] text-slate-500 truncate max-w-[170px]">{v.houseAddress}</div>
-                    </td>
+                  return (
+                    <tr key={v.id} className="hover:bg-slate-50/80 transition">
+                      {/* Visit ID */}
+                      <td className="py-4 px-5">
+                        <div className="font-mono font-black text-slate-900 ltr-isolate">{v.id}</div>
+                        <div className="text-[10px] text-slate-400">{v.purpose}</div>
+                      </td>
 
-                    {/* Engineer */}
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-1.5">
-                        <HardHat className="h-3.5 w-3.5 text-orange-600" />
-                        <span className="font-bold text-slate-800">{v.engineerName}</span>
-                      </div>
-                    </td>
+                      {/* House */}
+                      <td className="py-4 px-4">
+                        <div className="font-mono font-black text-orange-700 ltr-isolate">{v.houseId}</div>
+                        <div className="text-[10px] text-slate-500 truncate max-w-[170px]">{v.houseAddress}</div>
+                      </td>
 
-                    {/* Visit Type */}
-                    <td className="py-4 px-4">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black ${
-                          v.visitType === 'Safety Inspection'
-                            ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                            : v.visitType === 'Labour Training'
-                            ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                            : v.visitType === 'Final Inspection'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : 'bg-blue-50 text-blue-700 border border-blue-200'
-                        }`}
-                      >
-                        {v.visitType}
-                      </span>
-                    </td>
-
-                    {/* Date */}
-                    <td className="py-4 px-4 text-slate-700 font-medium">
-                      <div className="font-bold">{v.visitDate}</div>
-                      <div className="text-[10px] text-slate-400">{v.visitTime}</div>
-                    </td>
-
-                    {/* Status & Quality */}
-                    <td className="py-4 px-4">
-                      {v.status === 'Completed' ? (
-                        <div>
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">
-                            <Check className="h-3 w-3" /> Completed
-                          </span>
-                          {v.adminApproved ? (
-                            <div className="text-[9.5px] font-bold text-emerald-600 mt-0.5">Admin Approved</div>
-                          ) : (
-                            <div className="text-[9.5px] font-bold text-amber-600 mt-0.5">Pending Review</div>
-                          )}
+                      {/* Engineer */}
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-1.5">
+                          <HardHat className="h-3.5 w-3.5 text-orange-600 shrink-0" />
+                          <span className="font-bold text-slate-800">{v.engineerName}</span>
                         </div>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
-                          <Clock className="h-3 w-3" /> Scheduled
-                        </span>
-                      )}
-                    </td>
+                      </td>
 
-                    {/* AI Hazard Result */}
-                    <td className="py-4 px-4">
-                      {v.aiHazardResult ? (
-                        v.aiHazardResult.hasHazard ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-rose-100 text-rose-700 border border-rose-300">
-                            <Sparkles className="h-2.5 w-2.5" /> Hazard Detected ({v.aiHazardResult.confidence}%)
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
-                            <Sparkles className="h-2.5 w-2.5" /> AI Cleared
-                          </span>
-                        )
-                      ) : (
-                        <span className="text-[10px] text-slate-400">Awaiting Visit</span>
-                      )}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="py-4 px-5 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => setSelectedVisitReport(v)}
-                          className="px-3 py-1 bg-white border border-slate-200 hover:border-orange-300 text-slate-800 hover:text-orange-700 text-[11px] font-extrabold rounded-xl shadow-2xs transition cursor-pointer"
+                      {/* Visit Type */}
+                      <td className="py-4 px-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                            v.visitType === 'Safety Inspection'
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                              : v.visitType === 'Labour Training'
+                              ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                              : v.visitType === 'Final Inspection'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-blue-50 text-blue-700 border border-blue-200'
+                          }`}
                         >
-                          View Report
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          {isRTL ? visitTypeUrdu : v.visitType}
+                        </span>
+                      </td>
+
+                      {/* Date */}
+                      <td className="py-4 px-4 text-slate-700 font-medium">
+                        <div className="font-bold ltr-isolate">{v.visitDate}</div>
+                        <div className="text-[10px] text-slate-400 ltr-isolate">{v.visitTime}</div>
+                      </td>
+
+                      {/* Status & Quality */}
+                      <td className="py-4 px-4">
+                        {v.status === 'Completed' ? (
+                          <div>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              <Check className="h-3 w-3" /> {isRTL ? 'مکمل شدہ' : 'Completed'}
+                            </span>
+                            {v.adminApproved ? (
+                              <div className="text-[9.5px] font-bold text-emerald-600 mt-0.5">
+                                {isRTL ? 'ایڈمن سے منظور شدہ' : 'Admin Approved'}
+                              </div>
+                            ) : (
+                              <div className="text-[9.5px] font-bold text-amber-600 mt-0.5">
+                                {isRTL ? 'زیر جائزہ' : 'Pending Review'}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200">
+                            <Clock className="h-3 w-3" /> {isRTL ? 'شیڈول شدہ' : 'Scheduled'}
+                          </span>
+                        )}
+                      </td>
+
+                      {/* AI Hazard Result */}
+                      <td className="py-4 px-4">
+                        {v.aiHazardResult ? (
+                          v.aiHazardResult.hasHazard ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-rose-100 text-rose-700 border border-rose-300">
+                              <Sparkles className="h-2.5 w-2.5 shrink-0" />
+                              <span>{isRTL ? 'خطرہ موجود' : 'Hazard Detected'} (<span className="ltr-isolate">{v.aiHazardResult.confidence}%</span>)</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                              <Sparkles className="h-2.5 w-2.5 shrink-0" />
+                              <span>{isRTL ? 'محفوظ قرار' : 'AI Cleared'}</span>
+                            </span>
+                          )
+                        ) : (
+                          <span className="text-[10px] text-slate-400">
+                            {isRTL ? 'دورے کا انتظار' : 'Awaiting Visit'}
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Actions */}
+                      <td className={`py-4 px-5 ${isRTL ? 'text-left' : 'text-right'}`}>
+                        <div className={`flex items-center ${isRTL ? 'justify-start' : 'justify-end'} gap-1.5`}>
+                          <button
+                            onClick={() => setSelectedVisitReport(v)}
+                            className="px-3 py-1 bg-white border border-slate-200 hover:border-orange-300 text-slate-800 hover:text-orange-700 text-[11px] font-extrabold rounded-xl shadow-2xs transition cursor-pointer"
+                          >
+                            {isRTL ? 'رپورٹ دیکھیں' : 'View Report'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

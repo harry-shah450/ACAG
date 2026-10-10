@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 
 export const EngineerManagement = () => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const { engineers, houses, addEngineer, toggleEngineerStatus, assignEngineerToHouse } = useDashboardData();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -523,19 +523,19 @@ export const EngineerManagement = () => {
          ========================================================================= */}
       {viewMode === 'TABLE' && filteredEngineers.length > 0 && (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-2xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full min-w-0">
+            <table className="w-full text-xs min-w-[850px]">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-extrabold uppercase tracking-wider">
                   <th className="py-4 px-4 whitespace-nowrap text-center">Sr #</th>
-                  <th className="py-4 px-4 whitespace-nowrap">Engineer Details & Photo</th>
-                  <th className="py-4 px-4 whitespace-nowrap">PEC & Qualifications</th>
-                  <th className="py-4 px-4 whitespace-nowrap">Division & Region</th>
-                  <th className="py-4 px-4 whitespace-nowrap">Assigned Houses</th>
-                  <th className="py-4 px-4 whitespace-nowrap">Completed Visits</th>
-                  <th className="py-4 px-4 whitespace-nowrap">Labour Trained</th>
-                  <th className="py-4 px-4 whitespace-nowrap">Rating & Audit</th>
-                  <th className="py-4 px-5 text-right whitespace-nowrap">Actions</th>
+                  <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>Engineer Details & Photo</th>
+                  <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>PEC & Qualifications</th>
+                  <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>Division & Region</th>
+                  <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>Assigned Houses</th>
+                  <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>Completed Visits</th>
+                  <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>Labour Trained</th>
+                  <th className={`py-4 px-4 whitespace-nowrap ${isRTL ? 'text-right' : 'text-left'}`}>Rating & Audit</th>
+                  <th className={`py-4 px-5 whitespace-nowrap ${isRTL ? 'text-left' : 'text-right'}`}>Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">

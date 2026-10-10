@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 export const SettingsDashboard = () => {
-  const { t, language, changeLanguage } = useLanguage();
+  const { t, language, changeLanguage, isRTL } = useLanguage();
   const [searchParams] = useSearchParams();
   const initialTab = searchParams.get('tab') === 'audit' ? 'audit' : 'profile';
 
@@ -132,13 +132,13 @@ export const SettingsDashboard = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left cursor-pointer ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${isRTL ? 'text-right' : 'text-left'} cursor-pointer ${
                   isActive
                     ? 'bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 text-white shadow-md shadow-orange-500/20 font-extrabold'
                     : 'text-slate-600 hover:bg-orange-50/70 hover:text-orange-950'
                 }`}
               >
-                <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'} shrink-0`} />
                 <span className="truncate">{tab.label}</span>
               </button>
             );
@@ -246,11 +246,11 @@ export const SettingsDashboard = () => {
                 <p className="text-xs text-slate-500">Configure administrative permission privileges per system persona</p>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full min-w-0">
+                <table className="w-full text-xs min-w-[600px]">
                   <thead>
                     <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 font-extrabold uppercase">
-                      <th className="py-3 px-4">System Module</th>
+                      <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>System Module</th>
                       <th className="py-3 px-3 text-center">Super Admin</th>
                       <th className="py-3 px-3 text-center">Review Engineer</th>
                       <th className="py-3 px-3 text-center">Field Engineer</th>
@@ -541,16 +541,16 @@ export const SettingsDashboard = () => {
                 <p className="text-xs text-slate-500">Immutable ledger of all actions, approvals, disbursements, and rule changes</p>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full min-w-0">
+                <table className="w-full text-xs min-w-[650px]">
                   <thead>
                     <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 font-extrabold uppercase">
-                      <th className="py-3 px-4">User</th>
-                      <th className="py-3 px-4">Action</th>
-                      <th className="py-3 px-4">Module</th>
-                      <th className="py-3 px-4">Target ID</th>
-                      <th className="py-3 px-4">Timestamp</th>
-                      <th className="py-3 px-4 text-right">Status</th>
+                      <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>User</th>
+                      <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Action</th>
+                      <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Module</th>
+                      <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Target ID</th>
+                      <th className={`py-3 px-4 ${isRTL ? 'text-right' : 'text-left'}`}>Timestamp</th>
+                      <th className={`py-3 px-4 ${isRTL ? 'text-left' : 'text-right'}`}>Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -561,7 +561,7 @@ export const SettingsDashboard = () => {
                         <td className="py-3 px-4 text-slate-600">{log.module}</td>
                         <td className="py-3 px-4 font-mono text-orange-700">{log.houseId}</td>
                         <td className="py-3 px-4 font-mono text-slate-400">{log.timestamp}</td>
-                        <td className="py-3 px-4 text-right">
+                        <td className={`py-3 px-4 ${isRTL ? 'text-left' : 'text-right'}`}>
                           <span className="px-2 py-0.5 rounded-full text-[9.5px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200">
                             {log.status}
                           </span>
